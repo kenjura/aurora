@@ -1,0 +1,18 @@
+<nav id="topnav">
+	<span id="topnav-left">
+		<a href="/"><i class="fa fa-home"></i></a>
+	</span>
+	<span class="center-column dropdown-menu">
+		{{scope.menu}}
+	</span>
+	<span id="topnav-right">
+		<span class="dropdown">
+			<a>{{scope.user.displayName}}</a>
+			<div class="dropdown-content">
+				<div><a href="/login/facebook">Login</a></div>
+				<div><a href="/profile">Profile</a></div>
+				<div><a href="/logout">Logout</a></div>
+			</div>
+		</span>
+	</span>
+</nav>
