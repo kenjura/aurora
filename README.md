@@ -2,48 +2,29 @@
 
 It's a CMS in development.
 
-## status
-* Rudimentary layout in place
-* Rudimentary layout engine in place
-* It loads articles
-* It renders menus
-* It renders auto-indexes
-* The links seem to mostly work
+## get started
 
-It doesn't:
-* Translate wikitext to html
-* Support custom styles
-* Require auth to edit
-* Allow editing at all
-* Look good
-* Scrub HTML for safety
-* Render a multi-level menu (shallow only)
-* Hide the ".html" in a file url
-* Support images (no uploading, no referencing unless absolute)
-* Have dropdowny breadcrumbs (that show siblings of the selection on hover)
-
-## next steps
-
-Menu:
-* Either render 2-3 level static menu...
-* Or perhaps use an AJAX-powered JS menu that renders one layer at a time (and handles mouseout more gracefully)
-
-Styles:
-* Finish the style portion of articleReader
-* Make basic menu style
-
-Layout:
-* Decide how login will work. Are any other frontend routes needed? Can /login be integrated with home?
-
-Code Quality:
-* break up index.js into chunks
-
-Bots:
-* Make a bot that reads an erza menu and moves files around into a matching folder structure
-** It should also normalize file extensions
+* Create /etc/aurora.env on your local filesystem (see /docs/aurora.env.example for an example file)
+* Run "npm start"
 
 
-## how it's going to work
+# Project Status
+
+## works
+* Rendering content, menus, and styles
+* Facebook login
+* Top menus
+
+## doesn't work
+* No editor
+* Doesn't enforce login
+* No images
+
+
+
+# Requirements
+
+## high level
 
 * Uses local filesystem for articles (directory designated by environment variable)
 * Agnostic as to how you want to handle revision control. Could keep files in git repo, dropbox, etc
@@ -80,9 +61,7 @@ Or maybe just use grav? https://github.com/getgrav/grav
 * Articles could support markdown format
 * Menus could support YAML format
 
-# latest requirements
-
-## Interpreting state
+## specific requirements
 
 ### Preparation
 
