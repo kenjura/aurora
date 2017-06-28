@@ -20,7 +20,7 @@ debug('aurora online');
 passport.use(new Strategy({
     clientID: process.env.FACEBOOK_APPID,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: 'http://localhost:3003/login/facebook/return'
+    callbackURL: 'http://localhost:3004/login/facebook/return'
   },
   function(accessToken, refreshToken, profile, cb) {
     // In this example, the user's Facebook profile is supplied as the user
@@ -115,4 +115,4 @@ app.use((err, req, res, next) => {
   res.status(500).send('It is pitch black. You are likely to be eaten by a grue.');
 })
 
-app.listen(3003,err => console.log('app is running on port 3003'));
+app.listen(3004,err => console.log('app is running on port 3004'));
