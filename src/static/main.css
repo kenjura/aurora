@@ -134,3 +134,53 @@ nav#toc-horizontal li li a {
 	font-size: 15px;
 }
 nav#sidenav { display: none; }
+
+
+
+/**** IMAGES ****/
+.wikiImage, .noImage {
+	display: inline-block;
+	cursor: pointer;	
+	-webkit-transition: box-shadow 0.3s;	
+	position: relative;
+	overflow: hidden;
+	max-width: 100%;
+	margin-bottom: -6px;
+}
+.wikiImage img {
+	width: 100%;
+}
+.wikiImage.center {
+	display: block;
+	text-align: center;
+}
+.wikiImage.center img {
+	width: auto;
+}
+.wikiImage {
+}
+.wikiImage_caption {
+	/*display: none;*/
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	max-height: 75%;
+	background: rgba(0,0,0,0.75);
+	color: white;
+	overflow: auto;
+	padding: 10px;
+	text-align: center;
+	box-sizing: border-box;
+	opacity: 0;
+	-webkit-transition: top 0.2s, opacity 0.2s;
+}
+.wikiImage:hover .wikiImage_caption {
+	opacity: 1;
+	/*-webkit-animation: fadeIn 0.3s ease-out;*/
+}
+@-webkit-keyframes fadeIn {
+	0% { opacity: 0; top: 100%; }
+	100% { opacity: 1; top: 60%; }
+}
+/**** END IMAGES ****/

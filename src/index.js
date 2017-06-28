@@ -100,7 +100,8 @@ app.get('/profile',
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // catch-all for frontend routes
-app.get('*', function(req, res) {
+app.get('*', function(req, res, next) {
+  if (req.path.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
   const data = model.build(req.path);
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const obj = Object.assign({ breadcrumbs, user: req.user||{ displayName:'not logged in'} }, data);

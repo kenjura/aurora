@@ -1,5 +1,5 @@
 var _ = require('lodash');
-// var WikiImage = require('./WikiImage.js');
+var WikiImage = require('./WikiImage.js');
 
 var instance = {}, imageroot = '';
 
