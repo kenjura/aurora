@@ -14,11 +14,18 @@ It's a CMS in development.
 * Rendering content, menus, and styles
 * Facebook login
 * Top menus
+* Images (more or less)
+* Active/inactive links
 
 ## doesn't work
 * No editor
 * Doesn't enforce login
-* No images
+* No image upload
+* Only supports jpg and png images
+
+## other todos
+* Strip out old sectioning/TOC logic, replace with new frontend hotness
+* Reconcile styles (remember, style.css is only read by Aurora, not Erza)
 
 
 
