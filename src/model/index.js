@@ -44,16 +44,20 @@ function getAutoIndex(dirpath) {
   return `<ul>${ls.map( l => `<li><a href="${getLink(l)}">${getName(l)}</a>` ).join('')}</ul>`;
 
   function getLink(listing) { return path.join(dirpath, listing).replace( process.env.WIKIROOT, '' ) }
-  function getName(listing) { return listing.replace(/\.[^/.]+$/, '') }
+  function getName(listing) { return listing.replace(extRE, '') }
 }
+
+const extRE = /\.[^/.]+$/;
 
 function getContent(filepath, db) {
   // given an absolute file path, load file and translate if necessary
   const ext = path.extname(filepath);
   const raw = fs.readFileSync(filepath).toString();
-  const options = { db, noTOC:true }
+  const ls = fs.readdirSync(path.dirname(filepath)).map( f => f.replace(extRE, ''));
+  const articleName = filepath.split(path.sep).pop().replace(extRE, '');
+  const options = { db, noTOC:true, allArticles:ls };
   if (ext=='.html') return raw;
-  if (ext=='.txt') return WikiUtil.wikiToHtml(raw, 'articleName', options).html;
+  if (ext=='.txt') return WikiUtil.wikiToHtml(raw, articleName, options).html;
   return '~NOFILE~';
 }
 
@@ -85,8 +89,11 @@ function getMenu(dirpath, db) {
   function render(filepath) {
     const content = fs.readFileSync(filepath).toString();
     const ext = path.extname(filepath);
+    const ls = fs.readdirSync(path.dirname(filepath)).map( f => f.replace(extRE, ''));
+    const articleName = filepath.split(path.sep).pop().replace(extRE, '');
+    const options = { db, noTOC:true, allArticles:ls, noH1:true };
     if (ext=='.html') return content;
-    if (ext=='.txt') return WikiUtil.wikiToHtml(content,'articleName', { db, noH1:true }).html;
+    if (ext=='.txt') return WikiUtil.wikiToHtml(content, articleName, options).html;
     if (ext=='.yml') return 'YML MENU NOT YET SUPPORTED';
   }
 }
