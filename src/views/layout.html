@@ -31,6 +31,19 @@
     // to-do: patch in client-side copy of scope
   </script>
 
+  <script src="/static/js/UIUtil.js"></script>
+
+  <script id="temp-scroll-handler">
+    window.addEventListener('scroll', function(evt) {
+      const sections = document.querySelectorAll('.sectionOuter');
+      for (var i = 0; i < sections.length; i++) {
+        if (UIUtil.getWindowOffset(sections[i]).y > 72) break;
+      }
+      if (i > 0) i--;
+      document.body.setAttribute('current-section',i);
+    });
+  </script>
+
   <script id="toc-generator">
   // first, ensure all h1s, h2s, and h3s have a valid id
   const headers = document.querySelectorAll('h1, h2, h3');

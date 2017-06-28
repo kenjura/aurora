@@ -92,15 +92,21 @@ button[link]:hover, button.link:hover {
   display: inline-block;
   position: relative;
 }
-.dropdown-menu > ul > li > ul {
+.dropdown-menu ul ul {
   opacity: 0;
-  left: 0;
   position: absolute;
-  top: 100%;
   visibility: hidden;
-  transition: visibility 0.3s, opacity 0.3s;
+  transition: visibility 0.3s, opacity 0.3s;  
 }
-.dropdown-menu > ul > li:hover > ul {
+.dropdown-menu > ul > li > ul {
+  left: 0;
+  top: 100%;
+}
+.dropdown-menu li:hover > ul {
   opacity: 1;
   visibility: visible;
+}
+.dropdown-menu ul ul ul {
+  left: 100%;
+  top: 0%;
 }

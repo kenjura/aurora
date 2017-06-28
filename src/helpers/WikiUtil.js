@@ -123,8 +123,8 @@ function wikiToHtml(wikitext,articleName,args) {
 		// html = html.replace( find , replace );
 		html = html.replace( find , function(em,title,args,style,body){
 			if (args=='right') {
-				sidebarHtml += em.replace(find,'<div class="sidebarSection">$4</div>');
-				return em.replace(find,'<div class="right sidebarSection">$4</div>');
+				sidebarHtml += em.replace(find,'<aside class="sidebarSection">$4</aside>');
+				return em.replace(find,'<aside class="right sidebarSection">$4</aside>');
 			}
 			return em.replace(find,replace);
 		});
