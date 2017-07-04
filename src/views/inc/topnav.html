@@ -1,17 +1,37 @@
+<style>
+.topnav-item {
+	box-sizing: border-box;
+	color: white;
+	display: inline-block;
+	font-size: 16px;
+	line-height: 16px;
+	padding: 16px 16px;
+}
+#user-name {
+}
+#user-dropdown .dropdown-content {
+	top: calc(100% + 14px);
+}
+#user-dropdown .dropdown-content > a:hover {
+	background-color: rgba(0,0,0,0.2);
+	cursor: pointer;
+}
+</style>
+
 <nav id="topnav">
-	<span id="topnav-left">
-		<a href="/"><i class="fa fa-home"></i></a>
+	<span >
+		<a id="topnav-left" class="topnav-item" href="/"><i class="fa fa-home"></i></a>
 	</span>
 	<span class="center-column dropdown-menu">
 		{{scope.menu}}
 	</span>
 	<span id="topnav-right">
-		<span class="dropdown">
-			<a>{{scope.user.displayName}}</a>
+		<span id="user-dropdown" class="dropdown">
+			<a id="user-name" class="topnav-item">{{scope.user.displayName}}</a>
 			<div class="dropdown-content">
-				<div><a href="/login/facebook">Login</a></div>
-				<div><a href="/profile">Profile</a></div>
-				<div><a href="/logout">Logout</a></div>
+				<a href="/login/facebook">Login</a>
+				<a href="/profile">Profile</a>
+				<a href="/logout">Logout</a>
 			</div>
 		</span>
 	</span>

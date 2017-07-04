@@ -24,7 +24,7 @@
   background-color: rgba(0,0,0,0.2);
 }
 .dropdown-content > * > * {
-  white-space: normal;
+  /*white-space: normal;*/
 }
 
 i.icon-down-arrow {
