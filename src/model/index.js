@@ -35,8 +35,9 @@ module.exports.build = function(pathname) {
   const content = noFile ? getAutoIndex(dirpath) : getContent(filepath, db);
   const menu = getMenu(dirpath, db);
   const style = getStyle(dirpath);
+  const urls = getUrls(db, pathname);
 
-  return { content, menu, style };
+  return { content, filepath, menu, style, urls };
 }
 
 function getAutoIndex(dirpath) {
@@ -56,8 +57,8 @@ function getContent(filepath, db) {
   const ls = fs.readdirSync(path.dirname(filepath)).map( f => f.replace(extRE, ''));
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
   const options = { db, noTOC:true, allArticles:ls };
-  if (ext=='.html') return raw;
-  if (ext=='.txt') return WikiUtil.wikiToHtml(raw, articleName, options).html;
+  if (ext=='.html') return { final:raw, raw };
+  if (ext=='.txt') return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
   return '~NOFILE~';
 }
 
@@ -138,6 +139,13 @@ function getRealpath(pathname) {
   }
 
   return null;
+}
+
+function getUrls(db, pathname) {
+  return {
+    edit: `${pathname}/edit`,
+    editMenu: `${db}/_menu/edit`
+  }
 }
 
 
