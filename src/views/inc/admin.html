@@ -1,0 +1,38 @@
+<style>
+#admin-edit-menu {
+	position: fixed;
+	right: 10px;
+	top: 47px;
+	z-index: 145;
+	/*opacity: 0.5;*/
+
+    display: inline-block;
+    font-size: 14px;
+    font-weight: lighter;
+    line-height: 16px;
+    padding: 4px 8px;
+}
+#admin-edit-menu:hover {
+	/*opacity: 1;*/
+	background-color: rgba(0,0,0,0.2);
+}
+#admin-edit-menu > i {
+	font-size: 150%;
+}
+#admin-edit-menu .dropdown-content {
+	left: auto;
+	right: 0;
+}
+body[mode="edit"] #admin-edit-menu {
+	display: none;
+}
+</style>
+
+<div id="admin-edit-menu" class="dropdown">
+	<span>admin</span>
+	<div class="dropdown-content">
+	  <a href="{{scope.urls.edit}}">Edit this page</a>
+	  <a href="">Edit the menu</a>
+	  <a href="">Edit site style</a>
+	</div>
+</div>

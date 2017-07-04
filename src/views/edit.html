@@ -1,0 +1,66 @@
+<style>
+#editor {
+	background: white;
+	box-sizing: border-box;
+	margin: 96px auto 0 auto;
+	padding: 12px;
+	position: relative;
+	width: var(--main-width);
+}
+#editor * {
+	/*color: #ddd;*/
+	/*font-family: sans-serif;*/
+	/*font-size: initial;*/
+}
+#editor-textarea {
+	height: calc(100vh - 96px);
+	/*height: 100%;*/
+	visibility: hidden;
+}
+body[data-route-edit="true"] #editor {
+	top: 40vh;
+}
+</style>
+<div id="editor">
+	<div style="text-align: right; margin-bottom: 12px;">
+		<button secondary onclick="abandon()">abandon edit</button>
+		<button secondary onclick="saveAsDraft()">save as draft</button>
+		<button primary onclick="saveAndPublish()">save and publish</button>
+	</div>
+
+	<div id="editor-textarea">{{scope.content.raw}}</div>
+
+	<script src="/static/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+	    var editor = ace.edit("editor-textarea");
+	    editor.setTheme("ace/theme/monokai");
+	    // editor.getSession().setMode("ace/mode/markdown");
+	    // editor.setValue(scopeRaw);
+	    document.getElementById('editor-textarea').style.visibility = 'visible';
+	</script>
+</div>
+
+<script>
+function abandon() {
+	const pathname = window.location.pathname.replace( '/edit', '' );
+	window.location.pathname = pathname;
+}
+function saveAsDraft() {
+	alert('coming soon');
+}
+function saveAndPublish() {
+	const content = editor.getValue();
+	const pathname = window.location.pathname.replace( '/edit', '' );
+	fetch(pathname, { method:'POST', body:content })
+		.then(success)
+		.catch(failure);
+
+	function success(res) {
+		if (!res.ok) alert('something went wrong...');
+		else window.location.pathname = pathname;
+	}
+	function failure(err) {
+		alert('error');
+	}
+}
+</script>
