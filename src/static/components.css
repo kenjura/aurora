@@ -15,6 +15,18 @@
   position: absolute;
   top: 100%;
 }
+.dropdown-content > * {
+  display: block;
+  padding: 10px;
+  white-space: nowrap;
+}
+.dropdown-content > *:hover {
+  background-color: rgba(0,0,0,0.2);
+}
+.dropdown-content > * > * {
+  white-space: normal;
+}
+
 i.icon-down-arrow {
   position: relative;
   display: inline-block;
@@ -52,13 +64,13 @@ button[primary]:hover, button.primary:hover {
   color: #27B9F0;
 }
 button[secondary], button.secondary {
-  background-color: white;
+  background-color: transparent;
   border: 1px solid #4a4a4a;
   color: #4a4a4a;
 }
 button[secondary]:hover, button.secondary:hover {
   background-color: #AAA;
-  border-color: white;
+  border-color: transparent;
   color: white;
 }
 button[link], button.link {
