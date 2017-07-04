@@ -2,6 +2,7 @@ require('dotenv').config({path: '/etc/aurora.env'});
 
 const express       = require('express');
 const debug         = require('debug','aurora:main');
+const fs            = require('fs');
 const htmlEngine    = require('./helpers/htmlEngine');
 const model         = require('./model');
 const passport      = require('passport');
@@ -62,7 +63,7 @@ htmlEngine(app);
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
-app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('body-parser').text());
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
 // Initialize Passport and restore authentication state, if any, from the
@@ -101,11 +102,36 @@ app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // catch-all for frontend routes
 app.get('*', function(req, res, next) {
-  if (req.path.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
-  const data = model.build(req.path);
+  // endpoints other than view
+  let mode = 'view', pathname = req.path;
+  if (pathname.substr(-5)==='/edit') {
+    mode = 'edit';
+    pathname = pathname.substr(0, pathname.length-5);
+  }
+
+  // image
+  if (pathname.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
+
+  // go
+  const data = model.build(pathname);
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
-  const obj = Object.assign({ breadcrumbs, user: req.user||{ displayName:'not logged in'} }, data);
-  res.render('home', obj);;
+  const user = req.user || { displayName:'not logged in'};
+  const obj = Object.assign({ breadcrumbs, mode, user }, data);
+  res.render(mode, obj);;
+});
+
+app.post('*', function(req, res, next) {
+  try {
+    debugger;
+    const data = model.build(req.path);
+    const filepath = data.filepath;
+    fs.writeFileSync(filepath, req.body);
+    res.status(200).send('The article was updated.');
+  } catch(err) {
+    console.error(err);
+    res.status(500).send('An error occurred');
+  }
+
 });
 
 
