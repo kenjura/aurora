@@ -1,3 +1,4 @@
+const autoIndex = require('../helpers/autoIndex');
 const debug    = require('debug')('aurora:model');
 const fs       = require('fs');
 const path     = require('path');
@@ -41,11 +42,9 @@ module.exports.build = function(pathname) {
 }
 
 function getAutoIndex(dirpath) {
-  const ls = fs.readdirSync(dirpath);
-  return `<ul>${ls.map( l => `<li><a href="${getLink(l)}">${getName(l)}</a>` ).join('')}</ul>`;
+  const index = autoIndex.get(dirpath);
 
-  function getLink(listing) { return path.join(dirpath, listing).replace( process.env.WIKIROOT, '' ) }
-  function getName(listing) { return listing.replace(extRE, '') }
+  return { final: `<ul>${index.map( file => `<li><a href="${file.link}">${file.name}</a>` ).join('')}</ul>` };
 }
 
 const extRE = /\.[^/.]+$/;
