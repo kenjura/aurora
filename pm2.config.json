@@ -1,0 +1,11 @@
+{
+	"name":"auroraCMS",
+	"script":"src/index.js",
+	"env_main": {
+		"WIKIROOT":"/home/bitnami/Dropbox/RPG Root/RPG/wiki"		
+	},
+	"env_dm": {
+		"WIKIROOT":"/home/bitnami/Dropbox/RPG Root/RPG_DM/_wiki",
+		"port":"3005"
+	}
+}

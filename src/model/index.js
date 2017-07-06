@@ -4,7 +4,7 @@ const fs       = require('fs');
 const path     = require('path');
 const WikiUtil = require('../helpers/WikiUtil');
 
-module.exports.build = function(pathname) {
+module.exports.build = function(pathname, options={}) {
   // expects: current pathname (i.e. window.location.pathname e.g. /5e/Classes/Sorcerer )
   // returns: complete model with menu, content, style, etc
 
@@ -33,7 +33,7 @@ module.exports.build = function(pathname) {
   const db         = getDB(pathname);
 
   // the good stuff
-  const content = noFile ? getAutoIndex(dirpath) : getContent(filepath, db);
+  const content = (noFile||options.index) ? getAutoIndex(dirpath) : getContent(filepath, db);
   const menu = getMenu(dirpath, db);
   const style = getStyle(dirpath);
   const urls = getUrls(db, pathname);
@@ -142,8 +142,13 @@ function getRealpath(pathname) {
 
 function getUrls(db, pathname) {
   return {
-    edit: `${pathname}/edit`,
-    editMenu: `${db}/_menu/edit`
+    allArticles: clean(`/${db}/all`),
+    edit: clean(`${pathname}/edit`),
+    editMenu: clean(`${db}/_menu/edit`),
+  }
+
+  function clean(url) {
+    return url.replace(/\/\//g,'/');
   }
 }
 

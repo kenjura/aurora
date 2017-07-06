@@ -10,17 +10,18 @@
   <link rel="stylesheet" href="/static/main.css" />
   <link rel="stylesheet" href="/static/components.css" />
   <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="/static/lib/codemirror-5.27.4/lib/codemirror.css" />
   <style id="current-style">
 {{scope.style}}
   </style>
 
   <script src="/static/js/UIUtil.js"></script>
-  
 
-  <script id="global-scripts">
+
+  <script id="global-scripts" src="/static/js/global.js"></script>
+  <script id="debug-scripts">
     // to-do: patch in client-side copy of scope
     window.scopeRaw = `{{scope.content.raw}}`;
+
   </script>
 
 </head>
@@ -28,11 +29,11 @@
 
 	{{include('./inc/topnav.html')}}
 
-  <nav id="toc-horizontal" class="dropdown-menu"></nav>
+  {{include('./inc/toc.html')}}
 
   {{include('./inc/admin.html')}}
 
-	
+
   {{innerHtml}}
 
   <script id="temp-scroll-handler">
@@ -48,7 +49,7 @@
 
   <script id="toc-generator" src="/static/js/toc-generator.js">
   </script>
-
+<!--
   <script id="router">
   const route = window.route = {};
 
@@ -60,7 +61,7 @@
     document.body.setAttribute('data-route-edit', String(route.edit));
   }
 
-  </script>
+  </script> -->
 
 </body>
 </html>

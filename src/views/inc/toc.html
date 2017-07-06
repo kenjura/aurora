@@ -1,0 +1,40 @@
+<style id="toc-style">
+
+nav#toc-horizontal { z-index: 140; }
+
+nav#toc-horizontal {
+	background: #ddd;
+	box-sizing: border-box;
+	height: 24px;
+	left: 0;
+	padding-left: calc(50vw - var(--half-main-width));
+	position: fixed;
+	top: 48px;
+	width: 100%;
+}
+nav#toc-horizontal a {
+	color: #555;
+}
+nav#toc-horizontal a:hover {
+	background-color: rgba(0,0,0,0.2);
+}
+nav#toc-horizontal > ul ul {
+  background: #ddd;
+}
+nav#toc-horizontal > ul > li > a {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: lighter;
+	line-height: 16px;
+	padding: 4px 8px;
+}
+nav#toc-horizontal li li a {
+	padding: 2px 10px;
+	display: block;
+	font-weight: lighter;
+	font-size: 15px;
+}
+</style>
+
+<nav id="toc-horizontal" class="dropdown-menu"></nav>
+

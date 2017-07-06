@@ -13,7 +13,7 @@
 	/*font-size: initial;*/
 }
 #editor-textarea {
-	height: calc(100vh - 96px);
+	height: calc(100vh - 154px);
 	/*height: 100%;*/
 	visibility: hidden;
 }
@@ -28,14 +28,14 @@ body[data-route-edit="true"] #editor {
 		<button primary onclick="saveAndPublish()">save and publish</button>
 	</div>
 
-	<div id="editor-textarea">{{scope.content.raw}}</div>
+	<div id="editor-textarea"></div>
 
 	<script src="/static/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 	    var editor = ace.edit("editor-textarea");
 	    editor.setTheme("ace/theme/monokai");
 	    // editor.getSession().setMode("ace/mode/markdown");
-	    // editor.setValue(scopeRaw);
+	    editor.setValue(scopeRaw);
 	    document.getElementById('editor-textarea').style.visibility = 'visible';
 	</script>
 </div>

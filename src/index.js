@@ -1,5 +1,6 @@
 require('dotenv').config({path: '/etc/aurora.env'});
 
+const autoIndex     = require('./helpers/autoIndex');
 const express       = require('express');
 const debug         = require('debug','aurora:main');
 const fs            = require('fs');
@@ -11,6 +12,8 @@ const Strategy      = require('passport-facebook').Strategy;
 
 debug('aurora online');
 
+const port = process.env.PORT || 3004;
+
 // Configure the Facebook strategy for use by Passport.
 //
 // OAuth 2.0-based strategies require a `verify` function which receives the
@@ -21,7 +24,7 @@ debug('aurora online');
 passport.use(new Strategy({
     clientID: process.env.FACEBOOK_APPID,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: 'http://localhost:3004/login/facebook/return'
+    callbackURL: `http://localhost:${port}/login/facebook/return`
   },
   function(accessToken, refreshToken, profile, cb) {
     // In this example, the user's Facebook profile is supplied as the user
@@ -96,9 +99,16 @@ app.get('/profile',
   });
 
 
-
 // static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
+
+// special endpoints
+app.get('/:db/search/:query', (req, res, next) => {
+  const basepath = path.join(process.env.WIKIROOT, `/${req.params.db}`);
+  const allFiles = autoIndex.get(basepath);
+  const matches = allFiles.filter( file => file.name.match(req.params.query) );
+  res.status(200).send(matches);
+});
 
 // catch-all for frontend routes
 app.get('*', function(req, res, next) {
@@ -109,11 +119,16 @@ app.get('*', function(req, res, next) {
     pathname = pathname.substr(0, pathname.length-5);
   }
 
+  // special pages
+  const options = {};
+  if (pathname.match(/\/all$/)) { options.index = true; pathname = pathname.replace(/\/all$/,''); }
+
   // image
   if (pathname.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
 
   // go
-  const data = model.build(pathname);
+  const data = model.build(pathname, options);
+  console.log('data.urls=',data.urls);
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
   const obj = Object.assign({ breadcrumbs, mode, user }, data);
@@ -141,4 +156,4 @@ app.use((err, req, res, next) => {
   res.status(500).send('It is pitch black. You are likely to be eaten by a grue.');
 })
 
-app.listen(3004,err => console.log('app is running on port 3004'));
+app.listen(port, err => console.log(`app is running on port ${port}`));
