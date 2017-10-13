@@ -1,6 +1,7 @@
 const autoIndex = require('../helpers/autoIndex');
 const debug    = require('debug')('aurora:model');
 const fs       = require('fs');
+const matchOne = require('../helpers/matchOne');
 const path     = require('path');
 const WikiUtil = require('../helpers/WikiUtil');
 
@@ -27,6 +28,7 @@ module.exports.build = function(pathname, options={}) {
   if (!realpath) return debug(`Realpath is null. Unable to continue. My whole life is a lie.`);
   // if (realpath=='~~YESDIRNOFILE~~') return debug(`Valid directory, no index found. Should generate auto index. TBI.`);
   const noFile     = realpath=='~~YESDIRNOFILE~~';
+  const articleName = noFile ? '' : getArticleName(pathname, noFile);
   const articleExt = path.extname(realpath);
   const filepath   = noFile ? null : realpath;
   const dirpath    = noFile ? path.join(process.env.WIKIROOT, pathname) : path.dirname(filepath);
@@ -36,9 +38,16 @@ module.exports.build = function(pathname, options={}) {
   const content = (noFile||options.index) ? getAutoIndex(dirpath) : getContent(filepath, db);
   const menu = getMenu(dirpath, db);
   const style = getStyle(dirpath);
+  const script = getScript(dirpath);
   const urls = getUrls(db, pathname);
+  const title = `${db} > ${articleName}`;
 
-  return { content, filepath, menu, style, urls };
+  return { content, filepath, menu, script, style, title, urls };
+}
+
+function getArticleName(pathname) {
+  // return matchOne(pathname, /([\/]+)$/);
+  return pathname.match( /[^\/]*$/ )[0];
 }
 
 function getAutoIndex(dirpath) {
@@ -112,6 +121,25 @@ function getStyle(dirpath) {
   function recurse(dirpath) {
     if (isFile(path.join(dirpath, 'style.css'))) return path.join(dirpath, 'style.css');
     if (isFile(path.join(dirpath, '_style.txt'))) return path.join(dirpath, '_style.txt');
+    const newPath = path.dirname(dirpath).split(path.sep).pop();
+    if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
+    return recurse(newPath);
+  }
+}
+
+function getScript(dirpath) {
+  // look for script.js in current directory
+  // if found, return. else move up one directory and repeat
+  // end when current directory < WIKIROOT or iterations > MAX_ITERATIONS
+
+  let i = 0;
+  const MAX_ITERATIONS = 10;
+  const styleFile = recurse(dirpath);
+  if (!styleFile) return `console.log('no custom script found')`;
+  else return fs.readFileSync(styleFile).toString();
+
+  function recurse(dirpath) {
+    if (isFile(path.join(dirpath, 'script.js'))) return path.join(dirpath, 'script.js');
     const newPath = path.dirname(dirpath).split(path.sep).pop();
     if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
     return recurse(newPath);

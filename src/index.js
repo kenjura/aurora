@@ -5,7 +5,7 @@ const express       = require('express');
 const debug         = require('debug','aurora:main');
 const fs            = require('fs');
 const htmlEngine    = require('./helpers/htmlEngine');
-const model         = require('./model');
+const model         = require('./model/model');
 const passport      = require('passport');
 const path          = require('path');
 const Strategy      = require('passport-facebook').Strategy;
@@ -128,7 +128,7 @@ app.get('*', function(req, res, next) {
 
   // go
   const data = model.build(pathname, options);
-  console.log('data.urls=',data.urls);
+  if (!data) return res.render('no_article');
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
   const obj = Object.assign({ breadcrumbs, mode, user }, data);
@@ -137,7 +137,6 @@ app.get('*', function(req, res, next) {
 
 app.post('*', function(req, res, next) {
   try {
-    debugger;
     const data = model.build(req.path);
     const filepath = data.filepath;
     fs.writeFileSync(filepath, req.body);
@@ -157,3 +156,4 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(port, err => console.log(`app is running on port ${port}`));
+
