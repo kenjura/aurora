@@ -1,0 +1,16 @@
+{
+	"apps": [
+		{ 
+			"name": "aurora",
+			"script": "src/index.js"
+		},
+		{ 
+			"name": "aurora-secret",
+			"script": "src/index.js",
+			"env": {
+				"WIKIROOT": "/home/bitnami/Dropbox/RPG Root/RPG_DM/_wiki",
+				"PORT": 3005
+			}
+		}
+	]
+}
