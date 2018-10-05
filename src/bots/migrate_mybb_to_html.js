@@ -1,3 +1,5 @@
+require('dotenv').config({path: '/etc/aurora.env'});
+
 const express = require('express');
 const mysql   = require('mysql');
 const _       = require('lodash');
@@ -6,11 +8,16 @@ const app = express();
 
 app.get('/', (req, res) => {
 
+  const host = process.env.MYSQL_HOST;
+  const user = process.env.MYSQL_USER;
+  const pass = process.env.MYSQL_PASS;
+  const db = process.env.MYSQL_DB;
+
   const connection = mysql.createConnection({
-    host: 'mysql2.cac1jwbdkdil.us-west-2.rds.amazonaws.com',
-    user: 'dev',
-    password: 'dev',
-    database: 'dev'
+    host,
+    user,
+    password,
+    database,
   });
 
   connection.connect();
