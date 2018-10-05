@@ -110,6 +110,18 @@ app.get('/:db/search/:query', (req, res, next) => {
   res.status(200).send(matches);
 });
 
+const rateLimit = require("express-rate-limit");
+ 
+app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+ 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100
+});
+ 
+// only apply to requests that begin with /api/
+app.use("/:db/:article", apiLimiter);
+
 // catch-all for frontend routes
 app.get('*', function(req, res, next) {
   // endpoints other than view
@@ -129,6 +141,7 @@ app.get('*', function(req, res, next) {
   // go
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
+  if (data.newFile) return res.render('edit');  
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
   const obj = Object.assign({ breadcrumbs, mode, user }, data);

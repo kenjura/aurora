@@ -25,7 +25,7 @@ module.exports.build = function(pathname, options={}) {
   // preparation
   pathname = pathname.replace(/%20/g,' ');
   const realpath = getRealpath(pathname);
-  if (!realpath) return debug(`Realpath is null. Unable to continue. My whole life is a lie.`);
+  if (!realpath) return { newFile:true };//debug(`Realpath is null. Unable to continue. My whole life is a lie.`);
   // if (realpath=='~~YESDIRNOFILE~~') return debug(`Valid directory, no index found. Should generate auto index. TBI.`);
   const noFile     = realpath=='~~YESDIRNOFILE~~';
   const articleName = noFile ? '' : getArticleName(pathname, noFile);
