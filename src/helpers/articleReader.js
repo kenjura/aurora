@@ -64,9 +64,11 @@ function buildModel(pathname) {
 	const fileExt = matches[3];
 
 	const filePath = pathIsFile && isFile(curPath) && curPath
+		|| isFile(path.join(curPath, '.md')) && path.join(curPath, '.md')
 		|| isFile(path.join(curPath, '.html')) && path.join(curPath, '.html')
 		|| isFile(path.join(curPath, '.txt')) && path.join(curPath, '.txt')
 		|| null;
+	console.log('filePath=',filePath);
 
 	const ls = fs.readdirSync(cwd);
 	const file = pathIsFile && fs.readFileSync(filePath).toString() || '';
@@ -78,6 +80,7 @@ function getFile(filepath) {
 	if (!fs.existsSync(filepath)) return 'file does not exist';
 	let content = fs.readFileSync(filepath).toString();
 	if (filepath.substr(-4)=='.txt') content = WikiUtil.wikiToHtml(content,'articleName').html;
+	// if (filepath.substr(-4)=='.md') content = WikiUtil.wikiToHtml(content,'articleName').html;
 	return content;
 }
 function getIndex(pathname, dirpath) {
