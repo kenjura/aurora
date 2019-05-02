@@ -2,7 +2,7 @@ const autoIndex = require('../helpers/autoIndex');
 const debug    = require('debug')('aurora:model');
 const fs       = require('fs');
 const matchOne = require('../helpers/matchOne');
-const markdown = require('markdown').markdown;
+const markdown = require('markdown-it')();
 const path     = require('path');
 const WikiUtil = require('../helpers/WikiUtil');
 
@@ -67,7 +67,7 @@ function getContent(filepath, db) {
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
   const options = { db, noTOC:true, allArticles:ls };
   if (ext=='.html') return { final:raw, raw };
-  if (ext=='.md') return { final:markdown.toHTML(raw), raw };
+  if (ext=='.md') return { final:markdown.render(raw), raw };
   if (ext=='.txt') return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
   return '~NOFILE~';
 }
@@ -123,8 +123,10 @@ function getStyle(dirpath) {
   function recurse(dirpath) {
     if (isFile(path.join(dirpath, 'style.css'))) return path.join(dirpath, 'style.css');
     if (isFile(path.join(dirpath, '_style.txt'))) return path.join(dirpath, '_style.txt');
-    const newPath = path.dirname(dirpath).split(path.sep).pop();
-    if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
+    // const newPath = path.dirname(dirpath).split(path.sep).pop(); // what? this just gets the current dirname by itself...not the whole path, which we need
+    const newPath = path.dirname(dirpath);
+    // if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return; // I do not understand what this line is trying to do (something about security?), but it's preventing recursion 100% of the time
+    if (i++ > MAX_ITERATIONS) return;
     return recurse(newPath);
   }
 }

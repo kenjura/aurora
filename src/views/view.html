@@ -12,3 +12,50 @@ a#inline-edit-button {
 	<a href="{{scope.urls.edit}}" id="inline-edit-button"><i class="fa fa-pencil"></i></a>
 	<!-- <button id="edit-button" secondary>Edit this page</button> -->
 </article>
+
+
+<script>
+
+function sectionify(node) {
+	if (node.querySelectorAll('.sectionOuter').length > 0) return;
+	const elements = node.children;
+	let sections = [];
+	let currentSection;
+	for (let i = 0; i < elements.length; i++) {
+		let element = elements[i].cloneNode(true);
+		if (!currentSection) currentSection = new DocumentFragment();
+		if (element.tagName === 'H1' && currentSection.children.length > 0) {
+			sections.push(currentSection);
+			currentSection = new DocumentFragment();
+			currentSection.append(element);
+		} else {
+			currentSection.append(element);
+		}
+		if (i === elements.length - 1) {
+			sections.push(currentSection);
+			currentSection = null;
+		}
+	};
+	sections.forEach(section => {
+		let inner = document.createElement('section');
+		inner.className = 'section';
+		let h1 = section.childNodes[0].nodeName === 'H1' ? section.childNodes[0] : null;
+		if (h1) section.removeChild(h1);
+		while (section.childNodes.length) { 
+			inner.appendChild(section.firstChild); 
+		}
+		if (h1) section.prepend(h1);
+		section.appendChild(inner);
+	});
+	node.innerHTML = '';
+	sections.forEach(section => {
+		let element = document.createElement('section');
+		element.className = 'sectionOuter';
+		element.append(section);
+		// section.forEach(e => element.appendChild(e));
+		node.appendChild(element);
+	})
+}
+
+sectionify(document.querySelector('#articleContent'));
+</script>
