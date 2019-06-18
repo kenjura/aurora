@@ -54,7 +54,8 @@ function sectionify(node) {
 		element.append(section);
 		// section.forEach(e => element.appendChild(e));
 		node.appendChild(element);
-	})
+	});
+	node.querySelectorAll('h1,h2,h3').forEach(header => header.setAttribute('id',header.innerText));
 }
 
 sectionify(document.querySelector('#articleContent'));
