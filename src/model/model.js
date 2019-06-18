@@ -93,8 +93,10 @@ function getMenu(dirpath, db) {
     if (isFile(path.join(dirpath, '_menu.yml'))) return path.join(dirpath, '_menu.yml');
     if (isFile(path.join(dirpath, '_menu.html'))) return path.join(dirpath, '_menu.html');
     if (isFile(path.join(dirpath, '_menu.txt'))) return path.join(dirpath, '_menu.txt');
-    const newPath = path.dirname(dirpath).split(path.sep).pop();
-    if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
+    // const newPath = path.dirname(dirpath).split(path.sep).pop();
+    const newPath = path.dirname(dirpath);
+    // if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
+    if (i++ > MAX_ITERATIONS) return;
     return recurse(newPath);
   }
   function render(filepath) {
