@@ -122,6 +122,26 @@ const apiLimiter = rateLimit({
 // only apply to requests that begin with /api/
 app.use("/:db/:article", apiLimiter);
 
+// images in wikiroot
+app.get(/^\/(.*)\/img\/(.*)/, function (req, res) {
+  const db = req.params[0];
+  const imgpath = req.params[1];
+  debug(`getting image with db=${db} and imgpath=${imgpath}`);
+  const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
+  const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
+  const filecontents = fs.readFileSync(fullpath);
+  switch (extension) {
+    case 'png':
+      res.header("Content-Type", "image/png");
+      break;
+    case 'jpg':
+      res.header("Content-Type", "image/jpeg");
+      break;
+    default:
+  }
+  res.status(200).send(filecontents);
+});
+
 // catch-all for frontend routes
 app.get('*', function(req, res, next) {
   // endpoints other than view
