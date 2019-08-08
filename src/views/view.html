@@ -60,3 +60,33 @@ function sectionify(node) {
 
 sectionify(document.querySelector('#articleContent'));
 </script>
+
+
+<!-- begin collapsible lists -->
+
+<style>
+#articleContent .collapsibleList > li{
+  /*list-style-image : url('/static/lib/collapsibleLists/button.png');*/
+  /*cursor           : auto;*/
+  list-style: inside;
+}
+
+#articleContent li.collapsibleListOpen{
+  list-style-image : url('/static/lib/collapsibleLists/button-open.png');
+  cursor           : pointer;
+}
+
+#articleContent li.collapsibleListClosed{
+  list-style-image : url('/static/lib/collapsibleLists/button-closed.png');
+  cursor           : pointer;
+}
+</style>
+
+<script src="/static/lib/collapsibleLists/CollapsibleLists.js"></script>
+
+<script>
+	document.querySelectorAll('#articleContent ul').forEach(ul => ul.className += 'collapsibleList');
+	CollapsibleLists.apply();
+</script>
+
+<!-- end collapsible lists -->
