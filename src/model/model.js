@@ -166,6 +166,7 @@ function getRealpath(pathname) {
   if (isFile(fullpath+'.html')) return fullpath+'.html';
   if (isFile(fullpath+'.txt')) return fullpath+'.txt';
   if (isDir(fullpath)) {
+    if (isFile(path.join(fullpath, '/index.md'))) return path.join(fullpath, '/index.md');
     if (isFile(path.join(fullpath, '/index.html'))) return path.join(fullpath, '/index.html');
     if (isFile(path.join(fullpath, '/index.txt'))) return path.join(fullpath, '/index.txt');
     if (isFile(path.join(fullpath, '/_home.txt'))) return path.join(fullpath, '/_home.txt');
