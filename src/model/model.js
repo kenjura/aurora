@@ -2,9 +2,10 @@ const autoIndex = require('../helpers/autoIndex');
 const debug    = require('debug')('aurora:model');
 const fs       = require('fs');
 const matchOne = require('../helpers/matchOne');
-const markdown = require('markdown-it')();
 const path     = require('path');
 const WikiUtil = require('../helpers/WikiUtil');
+
+const { markdownToHtml } = require('../helpers/markdownHelper');
 
 module.exports.build = function(pathname, options={}) {
   // expects: current pathname (i.e. window.location.pathname e.g. /5e/Classes/Sorcerer )
@@ -67,7 +68,7 @@ function getContent(filepath, db) {
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
   const options = { db, noTOC:true, allArticles:ls };
   if (ext=='.html') return { final:raw, raw };
-  if (ext=='.md') return { final:markdown.render(raw), raw };
+  if (ext=='.md') return { final:markdownToHtml(raw), raw };
   if (ext=='.txt') return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
   return '~NOFILE~';
 }
