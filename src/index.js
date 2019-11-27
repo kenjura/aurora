@@ -109,6 +109,14 @@ app.get('/:db/search/:query', (req, res, next) => {
   const matches = allFiles.filter( file => file.name.match(req.params.query) );
   res.status(200).send(matches);
 });
+app.get('/', (req, res, next) => {
+  const basepath = process.env.WIKIROOT;
+  const allFiles = autoIndex.get(basepath);
+  const scope = {
+    content: { final: allFiles.map(file => `<li><a href="${file.link}">${file.name}</a></li>`).join('') },
+  }
+  res.render('view', scope)
+});
 
 const rateLimit = require("express-rate-limit");
  
