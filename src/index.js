@@ -10,7 +10,7 @@ const passport      = require('passport');
 const path          = require('path');
 const Strategy      = require('passport-facebook').Strategy;
 
-debug('aurora online');
+debug('aurora is starting...');
 
 const port = process.env.PORT || 3004;
 
@@ -196,5 +196,8 @@ app.use((err, req, res, next) => {
   res.status(500).send('It is pitch black. You are likely to be eaten by a grue.');
 })
 
-app.listen(port, err => console.log(`app is running on port ${port}`));
+app.listen(port, err => {
+  debug('aurora is online');
+  console.log(`app is running on port ${port}`);
+});
 
