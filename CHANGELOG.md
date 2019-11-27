@@ -1,3 +1,11 @@
+# 0.11.0
++ 2019-11-26
++ markdown rendering improvements:
+  + added support for containers, deflists, and superscript
+  + moved markdown rendering into helper
++ BUGFIX: fixed issue where directory autoIndexes weren't generating for markdown indices
++ IMPROVEMENT: root page is now a (rough) autoIndex
+
 # 0.10.0
 + 2019-08-10
 + lists in article view are now collapsible
