@@ -88,3 +88,22 @@ article#mainContent #edit-button {
 	100% { opacity: 1; top: 60%; }
 }
 /**** END IMAGES ****/
+
+
+/** start autoIndex **/
+#autoIndex {
+	left: 50px;
+	position: fixed;
+	top: 100px;
+}
+#autoIndex li {
+	list-style: none;
+	margin: 0.4em 0;
+}
+#autoIndex li a {
+	color: inherit;
+}
+#autoIndex li a:hover {
+	color: auto;
+}
+/** end autoIndex **/

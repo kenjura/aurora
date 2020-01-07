@@ -52,10 +52,11 @@ function getArticleName(pathname) {
   return pathname.match( /[^\/]*$/ )[0];
 }
 
-function getAutoIndex(dirpath) {
+function getAutoIndex(dirpath, args={}) {
   const index = autoIndex.get(dirpath);
+  const indexHtml = `<ul>${index.map( file => `<li><a href="${file.link}">${file.name}</a>` ).join('')}</ul>`;
 
-  return { final: `<ul>${index.map( file => `<li><a href="${file.link}">${file.name}</a>` ).join('')}</ul>` };
+  return args.menu ? indexHtml : { final:indexHtml };
 }
 
 const extRE = /\.[^/.]+$/;
@@ -87,7 +88,7 @@ function getMenu(dirpath, db) {
   let i = 0;
   const MAX_ITERATIONS = 10;
   const menuFile = recurse(dirpath);
-  if (!menuFile) return getAutoIndex(dirpath);
+  if (!menuFile) return getAutoIndex(dirpath, { menu:true });
   else return render(menuFile);
 
   function recurse(dirpath) {

@@ -166,13 +166,22 @@ app.get('*', function(req, res, next) {
   // image
   if (pathname.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
 
-  // go
+  // prepare autoIndex
+  const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
+  const dirname = fs.lstatSync(fullpath).isDirectory() ? fullpath : path.dirname(fullpath);
+  const allFiles = autoIndex.get(dirname);
+  // const allFiles = fs.lstatSync(fullpath).isDirectory() ? autoIndex.get(fullpath) : [];
+  const index = allFiles
+    .map(file => `<li><a href="${file.link}">${file.name}</a></li>`)
+    .join('');
+
+  // render article
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
   if (data.newFile) return res.render('edit');  
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
-  const obj = Object.assign({ breadcrumbs, mode, user }, data);
+  const obj = Object.assign({ breadcrumbs, mode, user, index }, data);
   res.render(mode, obj);;
 });
 
