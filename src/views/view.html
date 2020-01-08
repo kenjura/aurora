@@ -20,6 +20,15 @@ a#inline-edit-button {
 
  -->
 <script>
+function rewriteUrl() {
+	const isDir = eval(`{{scope.isDir}}`);
+	const endsWithSlash = window.location.pathname.substr(-1) === '/';
+	if (isDir && !endsWithSlash) {
+		window.location.pathname += '/';
+	}
+}
+
+rewriteUrl();
 
 function sectionify(node) {
 	if (node.querySelectorAll('.sectionOuter').length > 0) return;
