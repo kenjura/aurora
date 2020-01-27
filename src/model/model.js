@@ -92,6 +92,7 @@ function getMenu(dirpath, db) {
   else return render(menuFile);
 
   function recurse(dirpath) {
+    if (isFile(path.join(dirpath, '_menu.md'))) return path.join(dirpath, '_menu.md');
     if (isFile(path.join(dirpath, '_menu.yml'))) return path.join(dirpath, '_menu.yml');
     if (isFile(path.join(dirpath, '_menu.html'))) return path.join(dirpath, '_menu.html');
     if (isFile(path.join(dirpath, '_menu.txt'))) return path.join(dirpath, '_menu.txt');
@@ -108,6 +109,7 @@ function getMenu(dirpath, db) {
     const articleName = filepath.split(path.sep).pop().replace(extRE, '');
     const options = { db, noTOC:true, allArticles:ls, noH1:true };
     if (ext=='.html') return content;
+    if (ext=='.md') return markdownToHtml(content);
     if (ext=='.txt') return WikiUtil.wikiToHtml(content, articleName, options).html;
     if (ext=='.yml') return 'YML MENU NOT YET SUPPORTED';
   }
