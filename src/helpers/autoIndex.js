@@ -4,8 +4,21 @@ const path = require('path');
 const IGNORE = [ 'DS_Store', '.git' ];
 
 function get(dirpath) {
+	 let stats, exists, isDir; // sigh
+	try {
+		stats = fs.lstatSync(dirpath);
+		exists = true;
+		isDir = stats.isDirectory();
+	} catch(e) {
+		exists = false;
+	}
+	if (!exists) throw new Error('model > getAutoIndex > not sure how we got this far, but dirpath does not exist, so autoIndex cannot be generated');
+	const endingSlash = dirpath.substr(-1) === '/';
+	const parent = path.join(dirpath, (isDir && !endingSlash ? '/' : ''), '..');
+
 	const defaultFiles = [
-  		{ link:getLink('..'), name:'(up)' },
+  		{ link:parent, name:'(up)' },
+  		{ link:getLink('.'), name:'(cur)' },
   	];
 	const files = fs
 		.readdirSync(dirpath)
