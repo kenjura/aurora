@@ -100,7 +100,6 @@ app.get('/profile',
 
 
 // static files
-app.use(express.static(process.env.WIKIROOT)); // serve static files present wikiroot
 app.use('/static', express.static(path.join(__dirname, 'static'))) // serve static files backed into aurora
 
 // special endpoints
@@ -131,15 +130,25 @@ const apiLimiter = rateLimit({
 // only apply to requests that begin with /api/
 app.use("/:db/:article", apiLimiter);
 
-// images in wikiroot
-app.get(/^\/(.*)\/img\/(.*)/, function (req, res) {
-  const db = req.params[0];
-  const imgpath = req.params[1];
-  debug(`getting image with db=${db} and imgpath=${imgpath}`);
+// serve images and webfonts from wikiroot as static files (but not text files!)
+const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg' ];
+
+app.get('*', function (req, res, next) {
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
   const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
+  if (!WIKIROOT_STATIC_FILE_EXTENSIONS.includes(extension)) return next();
+  if (!fs.existsSync(fullpath)) return next();
+
+  // console.debug('getting static file from WIKIROOT.', { fullpath, extension });
+
   const filecontents = fs.readFileSync(fullpath);
   switch (extension) {
+    case 'woff':
+      res.header('Content-Type', 'application/font-woff');
+      break;
+    case 'woff2':
+      res.header('Content-Type', 'font/woff2');
+      break;
     case 'png':
       res.header("Content-Type", "image/png");
       break;
