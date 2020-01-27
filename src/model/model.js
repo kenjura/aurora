@@ -44,7 +44,7 @@ module.exports.build = function(pathname, options={}) {
   const urls = getUrls(db, pathname);
   const title = `${db} > ${articleName}`;
 
-  return { content, filepath, menu, script, style, title, urls };
+  return { content, filepath, menu, script, style, title, urls, filepath, dirpath };
 }
 
 function getArticleName(pathname) {
@@ -53,7 +53,20 @@ function getArticleName(pathname) {
 }
 
 function getAutoIndex(dirpath, args={}) {
-  const index = autoIndex.get(dirpath);
+  let stats, exists, isDir; // sigh
+  try {
+    stats = fs.lstatSync(dirpath);
+    exists = true;
+    isDir = stats.isDirectory();
+  } catch(e) {
+    exists = false;
+  }
+  if (!exists) throw new Error('model > getAutoIndex > not sure how we got this far, but dirpath does not exist, so autoIndex cannot be generated');
+
+  // if dirpath is a folder, use its parent folder for autoIndex; if it's a file, use current folder
+  const dirname = isDir ? dirpath : path.dirname(dirpath);
+  console.log({ dirpath, exists, isDir, dirname });
+  const index = autoIndex.get(dirname);
   const indexHtml = `<ul>${index.map( file => `<li><a href="${file.link}">${file.name}</a>` ).join('')}</ul>`;
 
   return args.menu ? indexHtml : { final:indexHtml };

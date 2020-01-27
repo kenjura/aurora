@@ -179,15 +179,22 @@ app.get('*', function(req, res, next) {
 
   // prepare autoIndex
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
-  const dirname = fs.lstatSync(fullpath).isDirectory() ? fullpath : path.dirname(fullpath);
+  let stats, exists, isDir; // sigh
+  try {
+    stats = fs.lstatSync(fullpath);
+    exists = true;
+    isDir = stats.isDirectory();
+  } catch(e) {
+    exists = false;
+  }
+  // const dirname = isDir ? fullpath : path.dirname(fullpath);
+  const dirname = path.dirname(fullpath);
   const allFiles = autoIndex.get(dirname);
   // const allFiles = fs.lstatSync(fullpath).isDirectory() ? autoIndex.get(fullpath) : [];
   const index = allFiles
     .map(file => `<li><a href="${file.link}">${file.name}</a></li>`)
     .join('');
-
-  // rewrite URL (implemented in frontend)
-  const isDir = fs.lstatSync(fullpath).isDirectory();
+  console.log({ fullpath, exists, isDir, dirname });
 
   // render article
   const data = model.build(pathname, options);
