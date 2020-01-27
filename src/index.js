@@ -100,7 +100,8 @@ app.get('/profile',
 
 
 // static files
-app.use('/static', express.static(path.join(__dirname, 'static')))
+app.use(express.static(process.env.WIKIROOT)); // serve static files present wikiroot
+app.use('/static', express.static(path.join(__dirname, 'static'))) // serve static files backed into aurora
 
 // special endpoints
 app.get('/:db/search/:query', (req, res, next) => {
