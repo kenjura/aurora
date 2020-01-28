@@ -28,7 +28,7 @@ function rewriteUrl() {
 	}
 }
 
-rewriteUrl();
+// rewriteUrl();
 
 function sectionify(node) {
 	if (node.querySelectorAll('.sectionOuter').length > 0) return;
@@ -105,8 +105,8 @@ sectionify(document.querySelector('#articleContent'));
 <script src="/static/lib/collapsibleLists/CollapsibleLists.js"></script>
 
 <script>
-	document.querySelectorAll('#articleContent ul').forEach(ul => ul.className += 'collapsibleList');
-	CollapsibleLists.apply();
+	// document.querySelectorAll('#articleContent ul').forEach(ul => ul.className += 'collapsibleList');
+	// CollapsibleLists.apply();
 </script>
 
 <!-- end collapsible lists -->
