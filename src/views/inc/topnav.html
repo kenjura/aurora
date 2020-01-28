@@ -103,30 +103,36 @@ nav#topnav { z-index: 150; }
 }
 </style>
 
-<nav id="topnav">
-	<span >
-		<a id="topnav-home" class="topnav-item" href="/"><i class="fa fa-home"></i></a>
-		<span id="topnav-search" class="dropdown topnav-item">
-			<i class="fa fa-search"></i>
-			<span class="dropdown-content">
-				<input onkeypress="search(this.value)">
-				<div id="search-results"></div>
+<nav id="topnav" class="desktop-only">
+		<span >
+			<a id="topnav-home" class="topnav-item" href="/"><i class="fa fa-home"></i></a>
+			<span id="topnav-search" class="dropdown topnav-item">
+				<i class="fa fa-search"></i>
+				<span class="dropdown-content">
+					<input onkeypress="search(this.value)">
+					<div id="search-results"></div>
+				</span>
 			</span>
 		</span>
-	</span>
-	<span class="center-column dropdown-menu">
-		{{scope.menu}}
-	</span>
-	<span id="topnav-right">
-		<span id="user-dropdown" class="dropdown">
-			<a id="user-name" class="topnav-item">{{scope.user.displayName}}</a>
-			<div class="dropdown-content">
-				<a href="/login/facebook">Login</a>
-				<a href="/profile">Profile</a>
-				<a href="/logout">Logout</a>
-			</div>
+		<span class="center-column dropdown-menu">
+			{{scope.menu}}
 		</span>
-	</span>
+		<span id="topnav-right">
+			<span id="user-dropdown" class="dropdown">
+				<a id="user-name" class="topnav-item">{{scope.user.displayName}}</a>
+				<div class="dropdown-content">
+					<a href="/login/facebook">Login</a>
+					<a href="/profile">Profile</a>
+					<a href="/logout">Logout</a>
+				</div>
+			</span>
+		</span>
+</nav>
+<nav id="topnav" class="mobile-only">
+	<a id="topnav-home" class="topnav-item" href="/"><i class="fa fa-home"></i></a>
+	<a class="topnav-item" href="../">up</a>
+	<a class="topnav-item" onclick="document.body.setAttribute('index',true)">menu</a>
+	<a class="topnav-item" href="{{scope.urls.allArticles}}">List all articles</a>
 </nav>
 
 <script id="topnav-script">

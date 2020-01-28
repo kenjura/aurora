@@ -1,0 +1,33 @@
+#autoIndex { display: none; }
+
+@media (min-width: 901px) {
+	.desktop-only { display: block; }
+	.mobile-only { display: none; }
+}
+
+@media (max-width: 900px) {
+	.desktop-only { display: none; }
+	.mobile-only { display: block; }
+
+
+	article#mainContent {
+		width: 100%;
+	}
+
+	aside {
+		max-height: none;
+		overflow: visible;
+		position: static;
+		right: auto;
+		max-width: 100%;
+		top: auto;
+	}
+
+	nav#topnav {
+		padding-left: 40px !important;
+	}
+
+	body[index="true"] #mainContent { display: none; }
+	body[index="true"] #autoIndex { display: block; }
+}
+
