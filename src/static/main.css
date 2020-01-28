@@ -107,3 +107,21 @@ article#mainContent #edit-button {
 	color: auto;
 }
 /** end autoIndex **/
+
+
+/** start aside **/
+aside {
+	color: white;
+	max-height: calc(100vh - 72px);
+	max-width: 20em;
+	overflow: auto;
+	padding: 20px;
+	position: fixed;
+	right: 10px;
+	top: 50px;
+}
+
+aside img, section img {
+	max-width: 100%;
+}
+/** end aside **/
