@@ -31,9 +31,9 @@ body[mode="edit"] #admin-edit-menu {
 <div id="admin-edit-menu" class="dropdown">
 	<span>admin</span>
 	<div class="dropdown-content">
-	  <a href="{{scope.urls.edit}}">Edit this page</a>
-	  <a href="{{scope.urls.editMenu}}">Edit the menu</a>
+	  <a href="{{(scope.urls||{}).edit}}">Edit this page</a>
+	  <a href="{{(scope.urls||{}).editMenu}}">Edit the menu</a>
     <a href="">Edit site style</a>
-	  <a href="{{scope.urls.allArticles}}">List all articles</a>
+	  <a href="{{(scope.urls||{}).allArticles}}">List all articles</a>
 	</div>
 </div>
