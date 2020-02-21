@@ -15,12 +15,12 @@
 	}
 
 	aside {
-		max-height: none;
-		overflow: visible;
-		position: static;
-		right: auto;
-		max-width: 100%;
-		top: auto;
+		max-height: none !important;
+		overflow: visible !important;
+		position: static !important;
+		right: auto !important;
+		max-width: 100% !important;
+		top: auto !important;
 	}
 
 	nav#topnav {
