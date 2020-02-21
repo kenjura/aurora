@@ -27,7 +27,7 @@ module.exports.build = function(pathname, options={}) {
   // preparation
   pathname = pathname.replace(/%20/g,' ');
   const realpath = getRealpath(pathname);
-  if (!realpath) return { newFile:true };//debug(`Realpath is null. Unable to continue. My whole life is a lie.`);
+  if (realpath === null) return buildModelForUnknownFile(pathname, options); // sigh
   // if (realpath=='~~YESDIRNOFILE~~') return debug(`Valid directory, no index found. Should generate auto index. TBI.`);
   const noFile     = realpath=='~~YESDIRNOFILE~~';
   const articleName = noFile ? '' : getArticleName(pathname, noFile);
@@ -45,6 +45,23 @@ module.exports.build = function(pathname, options={}) {
   const title = `${db} > ${articleName}`;
 
   return { content, filepath, menu, script, style, title, urls, filepath, dirpath };
+}
+
+function buildModelForUnknownFile(pathname, options) {
+  return 404;
+  
+  // if (!realpath) return { newFile:true };//debug(`Realpath is null. Unable to continue. My whole life is a lie.`);
+  const dirpath = path.join(process.env.WIKIROOT, pathname);
+  const db = getDB(pathname);
+
+  const content = { final:'file not found', raw:'nofile' };
+  const menu = getMenu(dirpath, db);
+  const style = getStyle(dirpath);
+  const script = getScript(dirpath);
+  const urls = getUrls(db, pathname);
+  const title = 'file not found';
+
+  return { content, menu, style, script, urls, title, dirpath };
 }
 
 function getArticleName(pathname) {

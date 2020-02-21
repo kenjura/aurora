@@ -10,6 +10,8 @@ const passport      = require('passport');
 const path          = require('path');
 const Strategy      = require('passport-facebook').Strategy;
 
+const { getArticleList } = require('./helpers/getFilesRecursively');
+
 debug('aurora is starting...');
 
 const port = process.env.PORT || 3004;
@@ -103,10 +105,10 @@ app.get('/profile',
 app.use('/static', express.static(path.join(__dirname, 'static'))) // serve static files backed into aurora
 
 // special endpoints
-app.get('/:db/search/:query', (req, res, next) => {
+app.get('/:db/search/:query', async (req, res, next) => {
   const basepath = path.join(process.env.WIKIROOT, `/${req.params.db}`);
-  const allFiles = autoIndex.get(basepath);
-  const matches = allFiles.filter( file => file.name.match(req.params.query) );
+  const allFiles = await getArticleList(basepath);
+  const matches = allFiles.filter( file => file.match(req.params.query) );
   res.status(200).send(matches);
 });
 app.get('/', (req, res, next) => {
@@ -187,6 +189,7 @@ app.get('*', function(req, res, next) {
   } catch(e) {
     exists = false;
   }
+
   // const dirname = isDir ? fullpath : path.dirname(fullpath);
   const dirname = path.dirname(fullpath);
   const allFiles = autoIndex.get(dirname);
@@ -199,6 +202,7 @@ app.get('*', function(req, res, next) {
   // render article
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
+  if (data === 404) return res.render('404');
   if (data.newFile) return res.render('edit');  
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
