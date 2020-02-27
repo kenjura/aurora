@@ -157,6 +157,7 @@ function getStyle(dirpath) {
   else return fs.readFileSync(styleFile).toString();
 
   function recurse(dirpath) {
+    if (isFile(path.join(dirpath, '_style.css'))) return path.join(dirpath, '_style.css');
     if (isFile(path.join(dirpath, 'style.css'))) return path.join(dirpath, 'style.css');
     if (isFile(path.join(dirpath, '_style.txt'))) return path.join(dirpath, '_style.txt');
     // const newPath = path.dirname(dirpath).split(path.sep).pop(); // what? this just gets the current dirname by itself...not the whole path, which we need
