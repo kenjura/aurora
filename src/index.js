@@ -106,10 +106,21 @@ app.use('/static', express.static(path.join(__dirname, 'static'))) // serve stat
 
 // special endpoints
 app.get('/:db/search/:query', async (req, res, next) => {
+  console.warn('index > get /:db/search/:query > old search endpoint being used! this endpoint is deprecated in favor of /search/:query');
   const basepath = path.join(process.env.WIKIROOT, `/${req.params.db}`);
   const allFiles = await getArticleList(basepath);
   const matches = allFiles.filter( file => file.match(req.params.query) );
   res.status(200).send(matches);
+});
+app.get(/\/search\/(.*)/, async (req, res, next) => {
+  const fullQuery = req.params[0];
+  const articleName = fullQuery.substr(fullQuery.lastIndexOf('/')+1);
+  const basepath = path.join(process.env.WIKIROOT);
+  const allFiles = await getArticleList(basepath);
+  const goodMatches = allFiles.filter( file => file.match(fullQuery) );
+  const okMatches = allFiles.filter( file => file.match(articleName) );
+  res.status(200).send({ basepath, goodMatches, okMatches, fullQuery, articleName });
+  // res.status(200).send(matches);
 });
 app.get('/', (req, res, next) => {
   const basepath = process.env.WIKIROOT;
