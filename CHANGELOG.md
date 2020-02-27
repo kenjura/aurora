@@ -1,3 +1,15 @@
+# 0.12.0
++ 2020-02-27
++ autoIndex can now generate a menu for folders that don't have one (relative to current directory)
++ added, then removed url-rewrite capability designed to force URLs to have a trailing slash when viewing an index file (so that relative links work correctly). This feature needs work.
++ server now serves images and webfonts in WIKIROOT
++ added support for menus in markdown format
++ added a very rudimentary mobile style
++ rewrote 404 page, now async fetches candidate article links
++ added new search endpoint that can handle folder structures beyond old-style /:db/:article
++ BUGFIX: markdown-it dependency was not handling GFM link syntax correctly (spaces in link destination are supported inside <brackets>)
++ CLEANUP: CSS for asides moved into core (previously inside test site css)
+
 # 0.11.0
 + 2019-11-26
 + markdown rendering improvements:
