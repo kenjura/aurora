@@ -6,6 +6,7 @@ const debug         = require('debug','aurora:main');
 const fs            = require('fs');
 const htmlEngine    = require('./helpers/htmlEngine');
 const model         = require('./model/model');
+const noBots        = require('express-nobots');
 const passport      = require('passport');
 const path          = require('path');
 const Strategy      = require('passport-facebook').Strategy;
@@ -64,6 +65,14 @@ app.set('views', __dirname + '/views');
 // app.set('view engine', 'ejs');
 htmlEngine(app);
 
+app.use(require('morgan')('combined'));
+app.use(noBots({ block:false }));
+app.all('*', (req, res, next) => {
+	if (req.isBot) {
+		console.log('bot!');
+		return res.status(200).send('...');
+	} else next();
+});
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 // app.use(require('morgan')('combined'));
@@ -147,6 +156,10 @@ app.use("/:db/:article", apiLimiter);
 const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg' ];
 
 app.get('*', function (req, res, next) {
+  if (req.isBot) {
+	console.log('should not see this. bot accessing normal content! wtf');
+	return res.status(200).send('nope');
+  }
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
   const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
   if (!WIKIROOT_STATIC_FILE_EXTENSIONS.includes(extension)) return next();
