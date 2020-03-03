@@ -4,8 +4,13 @@ var mysql = require('mysql');
 const host = process.env.MYSQL_HOST;
 const user = process.env.MYSQL_USER;
 const pass = process.env.MYSQL_PASS;
+const port = process.env.MYSQL_PORT || 3306;
+
+const APPROVED_USERS = ['Kenjura','DorianAdricus','Kamuiofx','Benmayr','Cole','Colehead','Mark','Pilitus','Tallas','Philng','Kessick'];
+
 var sqlcfg = {
   host,
+  port,
   user,
   pass,
 };
@@ -30,6 +35,7 @@ function go() {
   // start the database
   connection = mysql.createConnection({
     host:sqlcfg.host,
+    port:sqlcfg.port,
     user:sqlcfg.user,
     password:sqlcfg.pass
   });
@@ -50,8 +56,14 @@ function go() {
   //  });
 
   // get all articles
-  const sql = `select page_title articleName, page_latest, convert(old_text using utf8) body from ${sourcedb}.page p
-    inner join ${sourcedb}.revision r on r.rev_id = p.page_latest
+  const sql = `select page_id, page_title articleName, page_latest, convert(old_text using utf8) body from ${sourcedb}.page p
+    inner join
+      (select rev_page, max(rev_id) rev_id
+      from ${sourcedb}.revision
+      /*where rev_user_text IN (${APPROVED_USERS.map(u => `'${u}'`).join(',')})*/
+      group by rev_page) rp
+    on rp.rev_page = p.page_id
+    inner join ${sourcedb}.revision r on r.rev_id = rp.rev_id
     inner join ${sourcedb}.text t on r.rev_text_id = t.old_id;`
   const query = connection.query(sql);
   query
@@ -66,13 +78,15 @@ function go() {
       // connection.pause();
 
       const articleName = row['articleName'].replace(/_/g, ' ');
-      const filepath = articleName==='Main Page'
+      // const filepath = articleName==='Main Page'
+      const filepath = row['page_id']===1
         ? `${path}/_home.txt`
         : `${path}/${articleName}.txt`;
       const body = row['body'];
 
       fs.writeFile(filepath, body, function(err){
         if (err) console.error('ERROR writing file. articleName=',articleName);
+        // else console.error(`Wrote article ${articleName} to path ${filepath} with body "${body.substr(0,50)}"`);
         else console.error(`Wrote article ${articleName} to path ${filepath}`);
         // connection.resume();
       });
