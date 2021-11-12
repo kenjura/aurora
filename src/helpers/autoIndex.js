@@ -11,6 +11,7 @@ function get(dirpath) {
 		isDir = stats.isDirectory();
 	} catch(e) {
 		exists = false;
+		return [];
 	}
 	if (!exists) throw new Error('model > getAutoIndex > not sure how we got this far, but dirpath does not exist, so autoIndex cannot be generated');
 	const endingSlash = dirpath.substr(-1) === '/';
