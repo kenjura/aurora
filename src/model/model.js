@@ -38,7 +38,7 @@ module.exports.build = function(pathname, options={}) {
   // debug({ realpath, articleName, filepath, dirpath, db });
 
   // the good stuff
-  const content = (noFile||options.index) ? getAutoIndex(dirpath) : getContent(filepath, db);
+  const content = (noFile||options.index) ? getAutoIndex(dirpath) : getContent(filepath, db, options);
   const menu = getMenu(dirpath, db);
   const style = getStyle(dirpath);
   const script = getScript(dirpath);
@@ -92,16 +92,19 @@ function getAutoIndex(dirpath, args={}) {
 
 const extRE = /\.[^/.]+$/;
 
-function getContent(filepath, db) {
+function getContent(filepath, db, renderOptions) {
   // given an absolute file path, load file and translate if necessary
   const ext = path.extname(filepath);
   const raw = fs.readFileSync(filepath).toString();
   const ls = fs.readdirSync(path.dirname(filepath)).map( f => f.replace(extRE, ''));
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
-  const options = { db, noTOC:true, allArticles:ls };
+  const options = { db, noTOC:true, allArticles:ls, ...renderOptions };
   if (ext=='.html') return { final:raw, raw };
   if (ext=='.md') return { final:markdownToHtml(raw), raw };
-  if (ext=='.txt') return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
+  if (ext=='.txt') {
+    if (renderOptions.renderToMarkdown) return { final:WikiUtil.wikiToMarkdown(raw, articleName, options).html, raw };
+    else  return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
+  }
   return '~NOFILE~';
 }
 

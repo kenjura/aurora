@@ -223,6 +223,9 @@ app.get('*', function(req, res, next) {
     .join('');
   console.log({ fullpath, exists, isDir, dirname });
 
+  // special render modes
+  options.renderToMarkdown = req.query.renderToMarkdown === 'true';
+
   // render article
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
