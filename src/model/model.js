@@ -35,6 +35,7 @@ module.exports.build = function(pathname, options={}) {
   const filepath   = noFile ? null : realpath;
   const dirpath    = noFile ? path.join(process.env.WIKIROOT, pathname) : path.dirname(filepath);
   const db         = getDB(pathname);
+  // debug({ realpath, articleName, filepath, dirpath, db });
 
   // the good stuff
   const content = (noFile||options.index) ? getAutoIndex(dirpath) : getContent(filepath, db);
@@ -122,6 +123,10 @@ function getMenu(dirpath, db) {
   else return render(menuFile);
 
   function recurse(dirpath) {
+    if (isFile(path.join(dirpath, 'menu.md'))) return path.join(dirpath, 'menu.md');
+    if (isFile(path.join(dirpath, 'menu.yml'))) return path.join(dirpath, 'menu.yml');
+    if (isFile(path.join(dirpath, 'menu.html'))) return path.join(dirpath, 'menu.html');
+    if (isFile(path.join(dirpath, 'menu.txt'))) return path.join(dirpath, 'menu.txt');
     if (isFile(path.join(dirpath, '_menu.md'))) return path.join(dirpath, '_menu.md');
     if (isFile(path.join(dirpath, '_menu.yml'))) return path.join(dirpath, '_menu.yml');
     if (isFile(path.join(dirpath, '_menu.html'))) return path.join(dirpath, '_menu.html');
@@ -201,9 +206,13 @@ function getRealpath(pathname) {
   if (isFile(fullpath+'.html')) return fullpath+'.html';
   if (isFile(fullpath+'.txt')) return fullpath+'.txt';
   if (isDir(fullpath)) {
+    const currentDir = fullpath.substr(fullpath.lastIndexOf('/')+1);
     if (isFile(path.join(fullpath, '/index.md'))) return path.join(fullpath, '/index.md');
     if (isFile(path.join(fullpath, '/index.html'))) return path.join(fullpath, '/index.html');
     if (isFile(path.join(fullpath, '/index.txt'))) return path.join(fullpath, '/index.txt');
+    if (isFile(path.join(fullpath, `/${currentDir}.md`))) return path.join(fullpath, `/${currentDir}.md`);
+    if (isFile(path.join(fullpath, `/${currentDir}.html`))) return path.join(fullpath, `/${currentDir}.html`);
+    if (isFile(path.join(fullpath, `/${currentDir}.txt`))) return path.join(fullpath, `/${currentDir}.txt`);
     if (isFile(path.join(fullpath, '/_home.txt'))) return path.join(fullpath, '/_home.txt');
     return '~~YESDIRNOFILE~~';
   }

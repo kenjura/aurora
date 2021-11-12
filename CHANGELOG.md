@@ -1,3 +1,7 @@
+# 0.14.0
++ 2021-11-12
++ added ability for files of pattern /foo/foo.md to be read as /foo/index.md
+
 # 0.13.0
 + 2020-02-28
 + basic implementation of nobots
