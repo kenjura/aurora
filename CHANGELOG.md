@@ -1,3 +1,7 @@
+# 0.13.0
++ 2020-02-28
++ basic implementation of nobots
+
 # 0.12.0
 + 2020-02-27
 + autoIndex can now generate a menu for folders that don't have one (relative to current directory)
