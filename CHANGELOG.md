@@ -1,3 +1,8 @@
+# 0.15.0
++ 2022-03-25
++ fixed bad package-lock.json
++ added ?raw query string option to return raw text
+
 # 0.14.0
 + 2021-11-12
 + added ability for files of pattern /foo/foo.md to be read as /foo/index.md
