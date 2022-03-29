@@ -32,7 +32,7 @@ function htmlEngine(filePath, options, callback) {
     return interpolate(content,options);
   }
   function interpolate(str,scope) {
-    return str.replace( /\{\{([^}]+)\}\}/g , function(em,g1) {
+    return str.replace( /\{\{(.*?)\}\}/g , function(em,g1) {
       try {
         return eval(g1);
       } catch(e) {
