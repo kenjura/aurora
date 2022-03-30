@@ -154,18 +154,59 @@ app.use("/:db/:article", apiLimiter);
 
 // serve images and webfonts from wikiroot as static files (but not text files!)
 const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg' ];
+/**
+ * Import 'file-type' ES-Module in CommonJS Node.js module
+ */
+let fileTypeFromFile;
+(async () => {
+  const foo = await import('file-type');
+  fileTypeFromFile = foo.fileTypeFromFile;
 
-app.get('*', function (req, res, next) {
+  // const type = await fileTypeFromFile('fixture/fixture.gif');
+  // console.log(type);
+})();
+const isBinaryFile = require("isbinaryfile").isBinaryFile;
+const { readFile, lstat } = require('fs').promises;
+
+app.get('*', async function (req, res, next) {
   if (req.isBot) {
-	console.log('should not see this. bot accessing normal content! wtf');
-	return res.status(200).send('nope');
+  	console.log('should not see this. bot accessing normal content! wtf');
+  	return res.status(200).send('nope');
   }
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
   const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
-  if (!WIKIROOT_STATIC_FILE_EXTENSIONS.includes(extension)) return next();
-  if (!fs.existsSync(fullpath)) return next();
+  const hasImageExtension = WIKIROOT_STATIC_FILE_EXTENSIONS.includes(extension);
 
-  // console.debug('getting static file from WIKIROOT.', { fullpath, extension });
+  // does the file exist? if not, it sure ain't an image
+  if (!fs.existsSync(fullpath)) return next(); 
+
+
+  // is it text? ignore
+  try {
+    const data = await readFile(fullpath);
+    const stat = await lstat(fullpath);
+    const isBinary = await isBinaryFile(data, stat.size);
+    if (!isBinary) return next();
+  } catch(err) {
+    console.error('index > wikiroot static image processor > something has gone wrong. skipping current file. this may be in error.');
+    console.error(err);
+    return next();
+  }
+
+  // is it an image? don't trust path, analyze the file
+  console.log({fullpath});
+  const { ext, mime } = await fileTypeFromFile(fullpath);
+  const isValidImage = WIKIROOT_STATIC_FILE_EXTENSIONS.includes(ext);
+  console.log({ ext, mime });
+
+  if (!isValidImage) {
+    console.log('this is not an image. bypassing image processing.');
+    return next();
+  } else {
+    console.log('this is an image. processing image.');
+  }
+
+  console.debug('getting static file from WIKIROOT.', { fullpath, extension });
 
   const filecontents = fs.readFileSync(fullpath);
   switch (extension) {

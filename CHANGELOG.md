@@ -1,3 +1,9 @@
+# 0.15.0
++ 2022-03-29
++ fixed bug with view render expressions
++ wikiroot static image renderer no longer relies entirely on extension; now analyzes file contents. result: way more images should render
+
+
 # 0.14.0
 + 2021-11-12
 + added ability for files of pattern /foo/foo.md to be read as /foo/index.md
