@@ -1,4 +1,4 @@
-require('dotenv').config({path: '/etc/aurora.env'});
+require('dotenv').config({path: process.env.DOTENVFILE || '/etc/aurora.env'});
 
 const autoIndex     = require('./helpers/autoIndex');
 const express       = require('express');
@@ -272,6 +272,7 @@ app.get('*', function(req, res, next) {
   const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
   const user = req.user || { displayName:'not logged in'};
   const obj = Object.assign({ breadcrumbs, mode, user, index, isDir }, data);
+  if (typeof(req.query.raw) !== 'undefined') return res.send(obj.content.raw);
   res.render(mode, obj);;
 });
 

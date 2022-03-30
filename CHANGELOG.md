@@ -1,8 +1,12 @@
-# 0.15.0
+# 0.16.0
 + 2022-03-29
 + fixed bug with view render expressions
 + wikiroot static image renderer no longer relies entirely on extension; now analyzes file contents. result: way more images should render
 
+# 0.15.0
++ 2022-03-25
++ fixed bad package-lock.json
++ added ?raw query string option to return raw text
 
 # 0.14.0
 + 2021-11-12
