@@ -66,12 +66,15 @@ exports.getImageTag = function(args) {
 			'</div>'+
 		'</a>';
 
-		var template2 = ''+
-		'<a href="{src}">'+
-			'<div class="wikiImage {class}" style="background: url(\'{src}\'); background-size: {fillMode}; {style}" {events}>'+
-				'<div class="wikiImage_caption">{caption}</div>'+
-			'</div>'+
-		'</a>';
+		// var template2 = ''+
+		// '<a href="{src}">'+
+		// 	'<div class="wikiImage {class}" style="background: url(\'{src}\'); background-size: {fillMode}; {style}" {events}>'+
+		// 		'<div class="wikiImage_caption">{caption}</div>'+
+		// 	'</div>'+
+		// '</a>';
+
+		const template2 = `<span class="wiki-image-container"><img src="${imgUrl}" style="${style}" class="wikiImage wiki-image" onClick="evt => imageZoom(evt)" />`;
+		return template2;
 
 
 		var html = template;

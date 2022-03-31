@@ -1,3 +1,8 @@
+# 0.17.0
++ 2022-03-30
++ rate limiter increased - was way too restrictive for development
++ changed WikiImage render and zoom
+
 # 0.16.0
 + 2022-03-29
 + fixed bug with view render expressions

@@ -43,13 +43,13 @@ article#mainContent #edit-button {
 
 /**** IMAGES ****/
 .wikiImage, .noImage {
-	display: inline-block;
+	/* display: inline-block;
 	cursor: pointer;	
 	-webkit-transition: box-shadow 0.3s;	
 	position: relative;
 	overflow: hidden;
 	max-width: 100%;
-	margin-bottom: -6px;
+	margin-bottom: -6px; */
 }
 .wikiImage img {
 	width: 100%;
@@ -86,6 +86,40 @@ article#mainContent #edit-button {
 @-webkit-keyframes fadeIn {
 	0% { opacity: 0; top: 100%; }
 	100% { opacity: 1; top: 60%; }
+}
+.wiki-image {
+	object-fit: cover;
+	object-position: top;
+}
+.wiki-image-container {
+	position: relative;
+}
+.wiki-image-clone {
+	position: fixed;
+	object-fit: contain;
+	/* top and left will be filled in by javascript */
+	top: 50%;
+	left: 50%;
+	width: 0;
+	height: 0;
+
+	/* transition: all 0.35s; */
+}
+.wiki-image-clone-expando {
+	top: 20px !important;
+	left: 20px !important;
+	width: calc(100vw - 40px) !important;
+	height: calc(100vh - 40px) !important;
+	z-index: 40404;
+}
+.wiki-image-clone-background {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0,0,0,0.75);
+	cursor: pointer;
 }
 /**** END IMAGES ****/
 
