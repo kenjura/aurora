@@ -34,7 +34,7 @@ module.exports.build = function(pathname, options={}) {
   const articleExt = path.extname(realpath);
   const filepath   = noFile ? null : realpath;
   const dirpath    = noFile ? path.join(process.env.WIKIROOT, pathname) : path.dirname(filepath);
-  const db         = getDB(pathname);
+  const db         = getDB(dirpath);
   // debug({ realpath, articleName, filepath, dirpath, db });
 
   // the good stuff
@@ -105,10 +105,10 @@ function getContent(filepath, db) {
   return '~NOFILE~';
 }
 
-function getDB(pathname) {
-  const chunks = pathname.split('/');
-  if (chunks.length < 1) return null;
-  return chunks[1];
+function getDB(dirpath) {
+  const fulldirpath = path.resolve(dirpath);
+  const fullwikiroot = path.resolve(process.env.WIKIROOT);
+  return fulldirpath.replace(fullwikiroot,'');
 }
 
 function getMenu(dirpath, db) {

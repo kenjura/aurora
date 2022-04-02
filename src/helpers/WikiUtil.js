@@ -30,8 +30,8 @@ function wikiToHtml(wikitext,articleName,args) {
 	if (!args) args = { db:'noDB', noSection:true, noTOC:true };
 	if (!wikitext) return 'nothing to render';
 
-	linkbase = '/'+args.db+'/';
-	imageroot = '/'+args.db+'/img/';
+	linkbase = ('/'+args.db+'/').replace(/\/\//g,'/');
+	imageroot = ('/'+args.db+'/img/').replace(/\/\//g,'/');
 
 	const allArticles = args.allArticles || [];
 
