@@ -196,15 +196,21 @@ function wikiToHtml(wikitext,articleName,args) {
 
 		active = _.some(allArticles,function(a){ return a==articleName });
 
-		var link = linkbase+articleName+anchor;
+		if (articleName.indexOf('/')>=0) {
+			// assume the link is fully formed
+			return `<a class="wikiLink${active?' active':''} data-articleName="${articleName}" href="${articleName}">${displayName||articleName}</a>`;
+		} else {
+			var link = linkbase+articleName+anchor;
 
-		if (articleName.indexOf('/')>-1) {
-			link = '/'+articleName+anchor;
-			displayName = articleName.substr(articleName.indexOf('/')+1);
-			console.log('link=',link);
+			// not sure what this did, but I need a new handler for this case
+			// if (articleName.indexOf('/')>-1) {
+			// 	link = '/'+articleName+anchor;
+			// 	displayName = articleName.substr(articleName.indexOf('/')+1);
+			// 	console.log('link=',link);
+			// }
+
+			return '<a class="wikiLink '+(active?'active':'inactive')+'" data-articleName="'+articleName+'" href="'+link+'">'+displayName+'</a>';
 		}
-
-		return '<a class="wikiLink '+(active?'active':'inactive')+'" data-articleName="'+articleName+'" href="'+link+'">'+displayName+'</a>';
 	};
 
 	function processNumberedLists(entireMatch) {
