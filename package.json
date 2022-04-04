@@ -38,6 +38,7 @@
     "mysql": "^2.15.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
+    "recursive-readdir": "^2.2.2",
     "showdown": "^1.8.7"
   },
   "devDependencies": {

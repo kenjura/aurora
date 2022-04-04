@@ -194,7 +194,7 @@ function wikiToHtml(wikitext,articleName,args) {
 
 		var active = true;
 
-		active = _.some(allArticles,function(a){ return a==articleName });
+		active = !!allArticles.find(article => article.match(articleName));
 
 		if (articleName.indexOf('/')>=0) {
 			// assume the link is fully formed

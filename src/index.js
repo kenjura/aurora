@@ -289,6 +289,8 @@ app.post('*', function(req, res, next) {
 
 });
 
+model.getAllFilesInWikiroot(); // by the time the first request comes in, this will be done. probably. I dunno. Fuck it.
+
 
 // general error handler
 app.use((err, req, res, next) => {

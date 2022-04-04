@@ -92,11 +92,20 @@ function getAutoIndex(dirpath, args={}) {
 
 const extRE = /\.[^/.]+$/;
 
+let allFilesInWikiroot = [];
+async function getAllFilesInWikiroot() {
+  if (allFilesInWikiroot.length) return allFilesInWikiroot;
+  const recurse = require('recursive-readdir');
+  allFilesInWikiroot = await recurse(process.env.WIKIROOT);
+  return allFilesInWikiroot;
+}
+module.exports.getAllFilesInWikiroot = getAllFilesInWikiroot;
+
 function getContent(filepath, db) {
   // given an absolute file path, load file and translate if necessary
   const ext = path.extname(filepath);
   const raw = fs.readFileSync(filepath).toString();
-  const ls = fs.readdirSync(path.dirname(filepath)).map( f => f.replace(extRE, ''));
+  const ls = allFilesInWikiroot;
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
   const options = { db, noTOC:true, allArticles:ls };
   if (ext=='.html') return { final:raw, raw };
