@@ -7,6 +7,7 @@
     "debug": "NODE_ENV=LOCAL nodemon --inspect src/index.js ",
     "debug-break": "NODE_ENV=LOCAL nodemon --inspect --debug-brk src/index.js",
     "start": "NODE_ENV=LOCAL nodemon src/index.js",
+    "start:pm2": "pm2 start pm2.config.json",
     "test": "echo \"tests are broken and will corrupt your mongo data\"",
     "test-broken": "mocha test/.setup.js --recursive src/**/*.test.js",
     "test:cover": "istanbul cover _mocha -- -u exports -R spec --require ignore-styles test/.setup.js test/.setup.js --recursive src/**/*.test.js -r mock-local-storage",
@@ -38,6 +39,7 @@
     "mysql": "^2.15.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
+    "pm2": "^5.3.0",
     "recursive-readdir": "^2.2.2",
     "showdown": "^1.8.7"
   },

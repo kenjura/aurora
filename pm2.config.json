@@ -3,30 +3,6 @@
 		{ 
 			"name": "aurora",
 			"script": "src/index.js"
-		},
-		{
-			"name": "aurora-purple-cat",
-			"script": "src/index.js",
-			"env": {
-				"WIKIROOT":"/home/bitnami/repos/purple-cat-public/docs",
-				"PORT": 3020
-			}
-		},
-		{
-			"name": "aurora-rpg-wiki",
-			"script": "src/index.js",
-			"env": {
-				"WIKIROOT":"/home/bitnami/repos/rpg-wiki",
-				"PORT": 3015
-			}
-		},
-		{ 
-			"name": "aurora-secret",
-			"script": "src/index.js",
-			"env": {
-				"WIKIROOT": "/home/bitnami/Dropbox/RPG Root/RPG_DM/_wiki",
-				"PORT": 3005
-			}
 		}
 	]
 }
