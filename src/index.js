@@ -153,7 +153,7 @@ const apiLimiter = rateLimit({
 app.use("/:db/:article", apiLimiter);
 
 // serve images and webfonts from wikiroot as static files (but not text files!)
-const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg' ];
+const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg', 'json' ];
 /**
  * Import 'file-type' ES-Module in CommonJS Node.js module
  */
@@ -175,7 +175,7 @@ app.get('*', async function (req, res, next) {
   }
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
   const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
-  const hasImageExtension = WIKIROOT_STATIC_FILE_EXTENSIONS.includes(extension);
+  const isTextButServeAsStatic = ['json'].includes(extension);
 
   // does the file exist? if not, it sure ain't an image
   if (!fs.existsSync(fullpath)) return next(); 
@@ -186,7 +186,19 @@ app.get('*', async function (req, res, next) {
     const data = await readFile(fullpath);
     const stat = await lstat(fullpath);
     const isBinary = await isBinaryFile(data, stat.size);
-    if (!isBinary) return next();
+    if (!isBinary) {
+      if (isTextButServeAsStatic) {
+        const ext = path.extname(fullpath);
+        switch (ext) {
+          case '.json':
+            res.header( "Content-Type", "application/json" );
+            break;
+        }
+        return res.status(200).send(data);
+      } else {
+        return next();
+      }
+    }
   } catch(err) {
     console.error('index > wikiroot static image processor > something has gone wrong. skipping current file. this may be in error.');
     console.error(err);
@@ -222,6 +234,9 @@ app.get('*', async function (req, res, next) {
     case 'jpg':
       res.header("Content-Type", "image/jpeg");
       break;
+      case 'json':
+        res.header("Content-Type", "application/json");
+        break;
     default:
   }
   res.status(200).send(filecontents);
