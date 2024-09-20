@@ -6,6 +6,21 @@ a#inline-edit-button {
     z-index: 20;
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.css">
+<style>
+
+nav#toc-bot {
+    position: fixed;
+    background: rgba(255,255,255,0.8);
+    left: 27px;
+    top: 100px;
+    padding: 20px;
+}
+</style>
+
+<nav id="toc-bot">
+	
+</nav>
 
 <article id="mainContent">
 	<div id="articleContent">{{scope.content.final}}</div>
@@ -113,3 +128,19 @@ sectionify(document.querySelector('#articleContent'));
 <script src="/static/js/wiki-image.js"></script>
 
 <!-- end collapsible lists -->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  // Where to render the table of contents.
+  tocSelector: '#toc-bot',
+  // Where to grab the headings to build the table of contents.
+  contentSelector: '#articleContent',
+  // Which headings to grab inside of the contentSelector element.
+  headingSelector: 'h1, h2, h3',
+  // For headings inside relative or absolute positioned containers within content.
+  hasInnerContainers: true,
+  collapseDepth: 2
+});
+</script>
