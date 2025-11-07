@@ -15,7 +15,7 @@
 
   const nestedHeaders = nest(nodelistToArray(headers));
   const tocHorizontalHtml = nestedHeaders.map( h => {
-    childHtml = h.h2s && `<ul>${h.h2s.map( h2 => `<li><a href="#">${h2.innerText}</a></li>`).join('')}</ul>`;
+    childHtml = h.h2s && `<ul>${h.h2s.map( h2 => `<li><a href="#${h2.id}">${h2.innerText}</a></li>`).join('')}</ul>`;
     return `<li><a href="#${h.id}">${h.innerText}</a>${childHtml}</li>`;
   }).join('');
   document.getElementById('toc-horizontal').innerHTML = `<ul>${tocHorizontalHtml}</ul>`;
