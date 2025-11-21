@@ -1,6 +1,7 @@
 :root {
 	--half-main-width: 480px;
 	--main-width: 960px;
+	--top-nav-height: 48px;
 }
 
 html, body {

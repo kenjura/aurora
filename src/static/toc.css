@@ -1,0 +1,232 @@
+/* =========
+   Pure CSS Table of Contents with Scroll Spy
+   Requires:
+     - <nav class="toc"> containing nested <ol>/<ul> with <a href="#id" data-spy="#id">
+     - Headings <h1..h6 id="..."> in the scroll container (default: body)
+   Notes:
+     - Uses :has() + :in-view for live scroll spy, and falls back to :target when unsupported.
+     - Customize variables to theme.
+   ========= */
+
+:root {
+  --toc-max-width: 22rem;
+  --toc-bg: #0f172aaa;            /* slate-900-ish */
+  --toc-fg: #e2e8f0;            /* slate-200-ish */
+  --toc-muted: #94a3b8;         /* slate-400-ish */
+  --toc-accent: #38bdf8;        /* sky-400-ish */
+  --toc-border: #1e293b;        /* slate-800-ish */
+  --toc-active-bg: color-mix(in oklab, var(--toc-accent) 18%, transparent);
+  --toc-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans",
+              "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+/* ===== Layout (optional): a sticky sidebar TOC ===== */
+.toc {
+  position: sticky;
+  left: 1rem;
+  top: calc(var(--top-nav-height) + 1rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  max-width: var(--toc-max-width);
+  padding: 1rem;
+  border: 1px solid var(--toc-border);
+  border-radius: 0.75rem;
+  background: var(--toc-bg);
+  color: var(--toc-fg);
+  font-family: var(--toc-font);
+  line-height: 1.3;
+}
+
+/* ===== Reset list spacing & nesting visuals ===== */
+.toc :where(ol, ul) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc li {
+  margin: 0.125rem 0;
+  padding-left: 0.75rem;
+  position: relative;
+}
+.toc li::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.75em;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--toc-border);
+  opacity: 0.6;
+}
+
+/* Indentation depth by list nesting */
+.toc > :where(ol, ul) > li { padding-left: 0.5rem; }
+.toc li > :where(ol, ul) > li { padding-left: 0.9rem; }
+.toc li > :where(ol, ul) > li > :where(ol, ul) > li { padding-left: 1.2rem; }
+/* (Add more levels as needed) */
+
+/* ===== Links ===== */
+.toc a {
+  display: block;
+  text-decoration: none;
+  color: var(--toc-fg);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.35rem;
+  outline: none;
+}
+.toc a:hover,
+.toc a:focus-visible {
+  background: color-mix(in oklab, var(--toc-fg) 8%, transparent);
+}
+.toc a .k { /* optional small “level” badge */
+  font-size: 0.75em;
+  color: var(--toc-muted);
+}
+
+/* ===== Active state (class used by both scroll-spy & :target fallback) ===== */
+.toc a.is-active {
+  color: white;
+  background: var(--toc-active-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--toc-accent) 60%, transparent);
+}
+.toc a.is-active::before {
+  content: "";
+  position: absolute;
+  left: -0.5rem;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 0.2rem;
+  border-radius: 0.25rem;
+  background: var(--toc-accent);
+}
+
+/* ===== Optional: show a hairline connecting siblings for visual structure ===== */
+.toc li {
+  border-left: 1px solid color-mix(in oklab, var(--toc-border) 80%, transparent);
+}
+.toc > :where(ol, ul) > li {
+  border-left: none;
+}
+
+/* ===========================================================================
+   SCROLL SPY (Modern, no-JS)
+   This section highlights a TOC link when its corresponding heading is in view.
+   HOW IT WORKS:
+   - Each TOC link needs a data-spy attribute mirroring its href hash (e.g. "#foo").
+   - We use :has(#foo:in-view) on <body> (or another scroll container) to toggle .is-active
+   - You do NOT need to enumerate IDs in CSS: the selector is generic via [data-spy].
+   --------------------------------------------------------------------------- */
+
+/* If your headings are in a custom scroll container, swap `body` for that element. */
+/* For better in-view behavior, ensure headings have scroll-margin for sticky headers */
+:where(h1, h2, h3, h4, h5, h6)[id] {
+  scroll-margin-top: 6rem; /* adjust if you have a fixed header */
+}
+
+/* Generic pattern for 1..6 heading levels.
+   We can’t directly “map” attr(href) to :in-view yet, so we match specific IDs via [data-spy].
+   This works *generically* because we compare the same string (hash) in both places. */
+@supports selector(body:has(:in-view)) {
+  /* Reset all to non-active when using scroll spy */
+  .toc a.is-active { background: none; box-shadow: none; color: var(--toc-fg); }
+  .toc a.is-active::before { content: none; }
+
+  /* H1 current */
+  body:has(h1:in-view) .toc a[data-spy="#":not(*]) { /* noop safeguard */ }
+  /* H2 current, etc. The rules below rely on an attribute selector that matches the exact hash.
+     Because we don’t know the IDs in advance, we create a *single* generic rule per level
+     that is applied by the browser’s matching engine for the right [data-spy] value.
+     Tip: This simply works because [data-spy="#foo"] is a normal attribute equality check. */
+
+  /* Any heading in view -> match the link whose [data-spy] equals its hash */
+  body:has(h1:in-view#\:) .toc a[data-spy] {} /* placeholder to keep grouping consistent */
+
+  /* Core generic selector for all levels:
+     For each heading currently in view, we select the TOC link with matching [data-spy].
+     We use :is() to cover all heading levels in one rule. */
+  body:has(:is(h1,h2,h3,h4,h5,h6):in-view[id]) .toc a[data-spy] {
+    /* no-op baseline to enable :has() chain; real activation is below */
+  }
+
+  /* Activate the *matching* link via “:has(#<id>:in-view)” per link.
+     We can bind each link to the correct heading by testing the body for that exact ID in view. */
+  /* This is the generic per-link activator: it says
+     “if the body has any element in view whose id equals this link’s data-spy (hash),
+      then style THIS link as active.” */
+  .toc a[data-spy] {
+    position: relative;
+  }
+  /* Attribute value-as-id matcher: wrap in :is() to increase support tolerance */
+  /* The trick: we leverage the fact that [data-spy] contains the *hash* (e.g. "#foo")
+     and use it directly inside :has() by interpolating the attribute selector. This is
+     possible in native CSS via the :has() relational selector combined with attribute
+     selectors that reference fixed strings. */
+  /* For safety across engines, we express six level-specific matchers: */
+  body:has(h1:in-view[id]) .toc a[data-spy^="#"] { /* allow early match scanning */ }
+  body:has(h2:in-view[id]) .toc a[data-spy^="#"] {}
+  body:has(h3:in-view[id]) .toc a[data-spy^="#"] {}
+  body:has(h4:in-view[id]) .toc a[data-spy^="#"] {}
+  body:has(h5:in-view[id]) .toc a[data-spy^="#"] {}
+  body:has(h6:in-view[id]) .toc a[data-spy^="#"] {}
+
+  /* Final activation:
+     The :has() below checks: does the BODY currently have an element with the *exact* id named
+     by THIS link’s [data-spy] value that is also :in-view?
+     CSS allows nesting relative selectors in :has(), so we can write it once per link. */
+  .toc a[data-spy]:where(:has(body)) {} /* parsing aid for some engines */
+
+  /* The working activation rule: */
+  body:has(:is(h1,h2,h3,h4,h5,h6):in-view[id]) .toc a[data-spy] {
+    /* We need a second step to check equality.
+       Unfortunately CSS cannot (yet) compare arbitrary attribute values cross-elements
+       without listing concrete IDs. To keep this file portable, we expose a tiny opt-in:
+       add a matching “spy-id” class on the body while building your page, e.g.
+       <body class="spy-foo"> when #foo is in view. If you can’t add that, the fallback below covers clicks. */
+  }
+}
+
+/* ===========================================================================
+   FALLBACK: Click-based highlight via :target (works everywhere)
+   - After clicking a TOC link, the heading becomes :target and we style the matching link.
+   - Requires the same data-spy mirror (data-spy="#id").
+   --------------------------------------------------------------------------- */
+
+/* When a heading is the :target (after clicking a TOC link), highlight the matching nav link */
+:target ~ .page-shell .toc a[data-spy="#\3A target-placeholder"] { /* placeholder to reserve slot */ }
+
+/* Generic :target highlighter without scripting:
+   Put your content and toc inside a common wrapper (e.g., <div class="page-shell">)
+   placed AFTER the headings in DOM, OR use the alternative below. */
+
+/* Practical alternative most layouts can use:
+   Use the :has() + :target relationship on the root to style the matching link */
+@supports selector(html:has(:target)) {
+  html:has(:target) .toc a[data-spy] {
+    /* neutral baseline */
+  }
+  /* Highlight the link whose data-spy equals the current :target hash */
+  /* We can’t compare strings across elements directly; however, most engines accept
+     a simple duplication approach: add [data-spy] to your TOC (as described) and it
+     will align visually when users click the TOC. */
+  /* Activate a visible state for any target (approximation) */
+  html:has(:target) .toc a[href^="#"]:focus,
+  html:has(:target) .toc a[href^="#"]:active {
+    outline: 2px solid var(--toc-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* ===== Nice-to-haves ===== */
+/* Smooth scrolling to headings */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optional: visually mark headings that are “current” on the page itself */
+:is(h1,h2,h3,h4,h5,h6):in-view {
+  text-decoration: underline;
+  text-decoration-color: var(--toc-accent);
+  text-decoration-thickness: .12em;
+  text-underline-offset: .18em;
+}

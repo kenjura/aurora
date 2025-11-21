@@ -4,6 +4,9 @@
   "description": "wiki software",
   "main": "src/index.js",
   "scripts": {
+    "build": "NODE_ENV=LOCAL node src/build.js",
+    "build:filtered": "NODE_ENV=LOCAL node src/build.js --path-match",
+    "build:test": "NODE_ENV=LOCAL node test-build-env.js",
     "debug": "NODE_ENV=LOCAL nodemon --inspect src/index.js ",
     "debug-break": "NODE_ENV=LOCAL nodemon --inspect --debug-brk src/index.js",
     "start": "NODE_ENV=LOCAL nodemon src/index.js",
