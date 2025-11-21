@@ -10,7 +10,7 @@
 
 :root {
   --toc-max-width: 22rem;
-  --toc-bg: #0f172a;            /* slate-900-ish */
+  --toc-bg: #0f172aaa;            /* slate-900-ish */
   --toc-fg: #e2e8f0;            /* slate-200-ish */
   --toc-muted: #94a3b8;         /* slate-400-ish */
   --toc-accent: #38bdf8;        /* sky-400-ish */
@@ -23,14 +23,15 @@
 /* ===== Layout (optional): a sticky sidebar TOC ===== */
 .toc {
   position: sticky;
-  top: 1rem;
+  left: 1rem;
+  top: calc(var(--top-nav-height) + 1rem);
   max-height: calc(100dvh - 2rem);
   overflow: auto;
   max-width: var(--toc-max-width);
   padding: 1rem;
   border: 1px solid var(--toc-border);
   border-radius: 0.75rem;
-  /* background: var(--toc-bg); */
+  background: var(--toc-bg);
   color: var(--toc-fg);
   font-family: var(--toc-font);
   line-height: 1.3;
