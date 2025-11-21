@@ -6,7 +6,8 @@ a#inline-edit-button {
     z-index: 20;
 }
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.css"> -->
+<link rel="stylesheet" href="/static/toc.css">
 <style>
 
 nav#toc-bot {
@@ -15,10 +16,11 @@ nav#toc-bot {
     left: 27px;
     top: 100px;
     padding: 20px;
+	overflow: hidden;
 }
 </style>
 
-<nav id="toc-bot">
+<nav id="toc" class="toc">
 	
 </nav>
 
@@ -129,8 +131,31 @@ sectionify(document.querySelector('#articleContent'));
 
 <!-- end collapsible lists -->
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+	document.querySelectorAll('#mainContent h1').forEach(header => {
+		const wrapper = document.createElement('header');
+		header.parentNode.insertBefore(wrapper, header);
+		wrapper.setAttribute('data-level', '1');
+		wrapper.appendChild(header);
+	});
+	document.querySelectorAll('#mainContent h2').forEach(header => {
+		const wrapper = document.createElement('header');
+		header.parentNode.insertBefore(wrapper, header);
+		wrapper.setAttribute('data-level', '2');
+		wrapper.appendChild(header);
+	});
+	document.querySelectorAll('#mainContent h3').forEach(header => {
+		const wrapper = document.createElement('header');
+		header.parentNode.insertBefore(wrapper, header);
+		wrapper.setAttribute('data-level', '3');
+		wrapper.appendChild(header);
+	});
+});
+</script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.min.js"></script>
+<script src="/static/toc.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.27.4/tocbot.min.js"></script>
 <script>
 tocbot.init({
   // Where to render the table of contents.
@@ -142,5 +167,5 @@ tocbot.init({
   // For headings inside relative or absolute positioned containers within content.
   hasInnerContainers: true,
   collapseDepth: 2
-});
+}); -->
 </script>

@@ -1,7 +1,7 @@
 const fs   = require('fs');
 const path = require('path');
 
-const IGNORE = [ 'DS_Store', '.git' ];
+const IGNORE = [ 'DS_Store', '.git', '.zip' ];
 
 function get(dirpath) {
 	 let stats, exists, isDir; // sigh

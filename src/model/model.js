@@ -165,15 +165,17 @@ function getDB(dirpath) {
   return fulldirpath.replace(fullwikiroot,'');
 }
 
+
+const { findAutomenuRoot } = require('../helpers/automenuRoot');
 function getMenu(dirpath, db) {
-  // look for menu.yml, menu.html, or menu.txt in current directory
-  // if found, return. else move up one directory and repeat
-  // end when current directory < WIKIROOT or iterations > MAX_ITERATIONS
+  // Check for automenuRoot config in this or parent directories
+  const automenuRootDir = findAutomenuRoot(dirpath, process.env.WIKIROOT);
+  const menuDir = automenuRootDir || dirpath;
 
   let i = 0;
   const MAX_ITERATIONS = 10;
-  const menuFile = recurse(dirpath);
-  if (!menuFile) return getAutoIndex(dirpath, { menu:true });
+  const menuFile = recurse(menuDir);
+  if (!menuFile) return getAutoIndex(menuDir, { menu:true });
   else return render(menuFile);
 
   function recurse(dirpath) {
@@ -185,9 +187,7 @@ function getMenu(dirpath, db) {
     if (isFile(path.join(dirpath, '_menu.yml'))) return path.join(dirpath, '_menu.yml');
     if (isFile(path.join(dirpath, '_menu.html'))) return path.join(dirpath, '_menu.html');
     if (isFile(path.join(dirpath, '_menu.txt'))) return path.join(dirpath, '_menu.txt');
-    // const newPath = path.dirname(dirpath).split(path.sep).pop();
     const newPath = path.dirname(dirpath);
-    // if (path.relative(process.env.WIKIROOT, newPath).includes('..') || i++ > MAX_ITERATIONS) return;
     if (i++ > MAX_ITERATIONS) return;
     return recurse(newPath);
   }
