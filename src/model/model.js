@@ -45,7 +45,10 @@ module.exports.build = function(pathname, options={}) {
   const urls = getUrls(db, pathname);
   const title = `${db} > ${articleName}`;
 
-  return { content, filepath, menu, script, style, title, urls, filepath, dirpath };
+  // Add the correct base path for relative URLs to the model
+  const baseUrlPath = noFile ? pathname : path.dirname(pathname.replace(/\/$/, ''));
+  
+  return { content, filepath, menu, script, style, title, urls, filepath, dirpath, baseUrlPath };
 }
 
 function buildModelForUnknownFile(pathname, options) {
@@ -108,10 +111,52 @@ function getContent(filepath, db) {
   const ls = allFilesInWikiroot;
   const articleName = filepath.split(path.sep).pop().replace(extRE, '');
   const options = { db, noTOC:true, allArticles:ls };
-  if (ext=='.html') return { final:raw, raw };
-  if (ext=='.md') return { final:markdownToHtml(raw), raw };
-  if (ext=='.txt') return { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
-  return '~NOFILE~';
+  
+  let content;
+  if (ext=='.html') content = { final:raw, raw };
+  else if (ext=='.md') content = { final:markdownToHtml(raw), raw };
+  else if (ext=='.txt') content = { final:WikiUtil.wikiToHtml(raw, articleName, options).html, raw };
+  else return '~NOFILE~';
+  
+  // Fix relative URLs in content
+  if (content && content.final) {
+    content.final = fixRelativeUrls(content.final, filepath);
+  }
+  
+  return content;
+}
+
+function fixRelativeUrls(html, filepath) {
+  // Determine the correct base path for relative URLs
+  const fileDir = path.dirname(filepath);
+  const wikirootPath = path.resolve(process.env.WIKIROOT);
+  const relativeDirFromWikiroot = path.relative(wikirootPath, fileDir);
+  const urlBasePath = '/' + relativeDirFromWikiroot.replace(/\\/g, '/');
+  
+  // Fix relative links and images
+  return html
+    // Fix relative links like href="./foo" or href="foo"
+    .replace(/href=["'](?!https?:\/\/|\/|#)([^"']*?)["']/g, (match, url) => {
+      const cleanUrl = url.replace(/^\.\//, '');
+      const newUrl = path.posix.join(urlBasePath, cleanUrl);
+      return `href="${newUrl}"`;
+    })
+    // Fix relative images like src="./image.png" or src="image.png"
+    .replace(/src=["'](?!https?:\/\/|\/|data:)([^"']*?)["']/g, (match, url) => {
+      const cleanUrl = url.replace(/^\.\//, '');
+      const newUrl = path.posix.join(urlBasePath, cleanUrl);
+      return `src="${newUrl}"`;
+    })
+    // Fix parent directory references like href="../foo"
+    .replace(/href=["'](\.\.\/[^"']*?)["']/g, (match, url) => {
+      const newUrl = path.posix.join(urlBasePath, url);
+      return `href="${newUrl}"`;
+    })
+    // Fix parent directory references for images like src="../image.png"
+    .replace(/src=["'](\.\.\/[^"']*?)["']/g, (match, url) => {
+      const newUrl = path.posix.join(urlBasePath, url);
+      return `src="${newUrl}"`;
+    });
 }
 
 function getDB(dirpath) {
