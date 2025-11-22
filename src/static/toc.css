@@ -22,7 +22,7 @@
 
 /* ===== Layout (optional): a sticky sidebar TOC ===== */
 .toc {
-  position: sticky;
+  position: fixed;
   left: 1rem;
   top: calc(var(--top-nav-height) + 1rem);
   max-height: calc(100dvh - 2rem);
