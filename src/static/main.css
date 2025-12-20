@@ -2,6 +2,32 @@
 	--half-main-width: 480px;
 	--main-width: 960px;
 	--top-nav-height: 48px;
+
+	/* Color scheme - light mode defaults */
+	--color-bg: #f5f5f5;
+	--color-bg-content: white;
+	--color-text: #333;
+	--color-text-muted: #666;
+	--color-link: #0066cc;
+	--color-link-visited: #551a8b;
+	--color-border: #ddd;
+	--color-code-bg: #f4f4f4;
+	--color-table-stripe: #f9f9f9;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-bg: #1a1a1a;
+		--color-bg-content: #2d2d2d;
+		--color-text: #e0e0e0;
+		--color-text-muted: #aaa;
+		--color-link: #6db3f2;
+		--color-link-visited: #b794f4;
+		--color-border: #444;
+		--color-code-bg: #3d3d3d;
+		--color-table-stripe: #363636;
+	}
 }
 
 html, body {
@@ -11,22 +37,28 @@ html, body {
 
 body {
 	font-family: sans-serif;
+	color: var(--color-text);
 }
 
 body {
-	background-color: #f5f5f5;
+	background-color: var(--color-bg);
 }
 
 
 a {
 	text-decoration: none;
+	color: var(--color-link);
+}
+
+a:visited {
+	color: var(--color-link-visited);
 }
 
 
 
 
 article#mainContent {
-	background: white;
+	background: var(--color-bg-content);
 	box-sizing: border-box;
 	margin: 96px auto 0 auto;
 	padding: 24px;
@@ -160,3 +192,37 @@ aside img, section img {
 	max-width: 100%;
 }
 /** end aside **/
+
+
+/** Dark mode support for common elements **/
+pre, code {
+	background-color: var(--color-code-bg);
+}
+
+blockquote {
+	border-left: 4px solid var(--color-border);
+	color: var(--color-text-muted);
+}
+
+hr {
+	border-color: var(--color-border);
+}
+
+table {
+	border-color: var(--color-border);
+}
+
+th {
+	background-color: var(--color-code-bg);
+}
+
+tr:nth-child(even) {
+	background-color: var(--color-table-stripe);
+}
+
+input, textarea, select {
+	background-color: var(--color-bg-content);
+	border: 1px solid var(--color-border);
+	color: var(--color-text);
+}
+/** end dark mode support **/

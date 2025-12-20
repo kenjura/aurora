@@ -1,3 +1,7 @@
+# 0.33.0
++ 2025-12-20
++ feature: dark mode in default style
+
 # 0.32.0
 + 2025-12-20
 + feature: versioning - added version dropdown in topnav for folders with _versions subfolder

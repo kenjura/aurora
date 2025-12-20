@@ -1,7 +1,7 @@
-- [ ] Fill out retroactive CHANGELOG and increment version
+- [x] Fill out retroactive CHANGELOG and increment version
 - [ ] Link fixer
 - [ ] Test/fix search feature
-- [ ] Dark mode
+- [x] Dark mode
 - [ ] Remove all vestiges of Facebook
 - [ ] Remove edit mode
 - [ ] Clean up sloppy express code
