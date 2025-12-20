@@ -316,8 +316,6 @@ function getRealpath(pathname) {
 function getUrls(db, pathname) {
   return {
     allArticles: clean(`/${db}/all`),
-    edit: clean(`${pathname}/edit`),
-    editMenu: clean(`${db}/_menu/edit`),
   }
 
   function clean(url) {

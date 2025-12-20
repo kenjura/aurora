@@ -182,12 +182,7 @@ app.get('*', async function (req, res, next) {
 
 // catch-all for frontend routes
 app.get('*', function(req, res, next) {
-  // endpoints other than view
-  let mode = 'view', pathname = req.path;
-  if (pathname.substr(-5)==='/edit') {
-    mode = 'edit';
-    pathname = pathname.substr(0, pathname.length-5);
-  }
+  let pathname = req.path;
 
   // special pages
   const options = {};
@@ -220,25 +215,9 @@ app.get('*', function(req, res, next) {
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
   if (data === 404) return res.render('404');
-  if (data.newFile) return res.render('edit');  
-  const breadcrumbs = '';//req.path.split('/').filter(a=>a&&a.length).map( a => `<a href="${req.path.substr(0,req.path.indexOf(a)+a.length)}">${a}</a>` ).join('&gt;');
-  const user = req.user || { displayName:'not logged in'};
-  const obj = Object.assign({ breadcrumbs, mode, user, index, isDir }, data);
+  const obj = Object.assign({ index, isDir }, data);
   if (typeof(req.query.raw) !== 'undefined') return res.send(obj.content.raw);
-  res.render(mode, obj);;
-});
-
-app.post('*', function(req, res, next) {
-  try {
-    const data = model.build(req.path);
-    const filepath = data.filepath;
-    fs.writeFileSync(filepath, req.body);
-    res.status(200).send('The article was updated.');
-  } catch(err) {
-    console.error(err);
-    res.status(500).send('An error occurred');
-  }
-
+  res.render('view', obj);
 });
 
 model.getAllFilesInWikiroot(); // by the time the first request comes in, this will be done. probably. I dunno. Fuck it.

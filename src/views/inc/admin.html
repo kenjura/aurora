@@ -4,7 +4,6 @@
 	right: 10px;
 	top: 47px;
 	z-index: 145;
-	/*opacity: 0.5;*/
 
     display: inline-block;
     font-size: 14px;
@@ -13,7 +12,6 @@
     padding: 4px 8px;
 }
 #admin-edit-menu:hover {
-	/*opacity: 1;*/
 	background-color: rgba(0,0,0,0.2);
 }
 #admin-edit-menu > i {
@@ -23,17 +21,11 @@
 	left: auto;
 	right: 0;
 }
-body[mode="edit"] #admin-edit-menu {
-	display: none;
-}
 </style>
 
 <div id="admin-edit-menu" class="dropdown">
 	<span>admin</span>
 	<div class="dropdown-content">
-	  <a href="{{(scope.urls||{}).edit}}">Edit this page</a>
-	  <a href="{{(scope.urls||{}).editMenu}}">Edit the menu</a>
-    <a href="">Edit site style</a>
 	  <a href="{{(scope.urls||{}).allArticles}}">List all articles</a>
 	</div>
 </div>

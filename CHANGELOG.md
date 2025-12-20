@@ -1,3 +1,7 @@
+# 0.35.0
++ 2025-12-20
++ refactor: remove edit mode - removed in-browser editing, POST handler, and ace editor library
+
 # 0.34.0
 + 2025-12-20
 + fix: remove all vestiges of Facebook

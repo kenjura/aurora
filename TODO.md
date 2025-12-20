@@ -3,7 +3,7 @@
 - [ ] Test/fix search feature
 - [x] Dark mode
 - [x] Remove all vestiges of Facebook
-- [ ] Remove edit mode
+- [x] Remove edit mode
 - [ ] Clean up sloppy express code
 - [ ] Add nvmrc, update to 24 LTS
 - [ ] Check for critical updates to dependencies
