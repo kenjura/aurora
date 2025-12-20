@@ -1,0 +1,11 @@
+- [ ] Fill out retroactive CHANGELOG and increment version
+- [ ] Link fixer
+- [ ] Test/fix search feature
+- [ ] Dark mode
+- [ ] Remove all vestiges of Facebook
+- [ ] Remove edit mode
+- [ ] Clean up sloppy express code
+- [ ] Add nvmrc, update to 24 LTS
+- [ ] Check for critical updates to dependencies
+- [ ] Better bot detection
+- [ ] Actual auth?

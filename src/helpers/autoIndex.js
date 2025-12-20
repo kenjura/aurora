@@ -1,5 +1,6 @@
 const fs   = require('fs');
 const path = require('path');
+const { isVersionsFolder } = require('./versioning');
 
 const IGNORE = [ 'DS_Store', '.git', '.zip' ];
 
@@ -23,7 +24,8 @@ function get(dirpath) {
   	];
 	const files = fs
 		.readdirSync(dirpath)
-		.filter(filterIgnores);
+		.filter(filterIgnores)
+		.filter(filename => !isVersionsFolder(filename)); // Exclude _versions folders from menu
 
 	return defaultFiles.concat(files.map( file => ({ link:getLink(file), name:getName(file) })));
 

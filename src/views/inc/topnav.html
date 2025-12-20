@@ -36,6 +36,37 @@ nav#topnav #topnav-search .dropdown-content {
 #search-results a {
 	color: white;
 }
+
+/* Version dropdown styles */
+nav#topnav #topnav-version {
+	position: absolute;
+	left: 94px;
+	top: 0px;
+}
+nav#topnav #topnav-version .dropdown-content {
+	background-color: #444;
+	margin-top: -1px;
+	padding: 5px 0;
+	min-width: 120px;
+}
+nav#topnav #topnav-version .dropdown-content a {
+	color: white;
+	display: block;
+	padding: 8px 16px;
+	text-decoration: none;
+}
+nav#topnav #topnav-version .dropdown-content a:hover {
+	background: rgba(255,255,255,0.2);
+}
+nav#topnav #topnav-version .dropdown-content a.version-current {
+	background: rgba(255,255,255,0.1);
+	font-weight: bold;
+}
+nav#topnav #topnav-version .version-label {
+	font-size: 12px;
+	opacity: 0.7;
+	margin-left: 4px;
+}
 /*nav#topnav #topnav-home a,
 nav#topnav #topnav-right a {
 	color: white;
@@ -113,6 +144,7 @@ nav#topnav { z-index: 150; }
 					<div id="search-results"></div>
 				</span>
 			</span>
+			{{scope.versions ? '<span id="topnav-version" class="dropdown topnav-item"><i class="fa fa-code-fork"></i><span class="version-label">' + scope.versions.current + '</span><span class="dropdown-content">' + scope.versions.available.map(function(v) { return '<a href="' + v.url + '" class="' + (v.isCurrent ? 'version-current' : '') + '">' + v.label + '</a>'; }).join('') + '</span></span>' : ''}}
 		</span>
 		<span class="center-column dropdown-menu">
 			{{scope.menu}}

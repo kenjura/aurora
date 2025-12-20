@@ -4,6 +4,7 @@ const fs       = require('fs');
 const matchOne = require('../helpers/matchOne');
 const path     = require('path');
 const WikiUtil = require('../helpers/WikiUtil');
+const { getVersionInfo, getVersionUrl } = require('../helpers/versioning');
 
 const { markdownToHtml } = require('../helpers/markdownHelper');
 
@@ -48,7 +49,45 @@ module.exports.build = function(pathname, options={}) {
   // Add the correct base path for relative URLs to the model
   const baseUrlPath = noFile ? pathname : path.dirname(pathname.replace(/\/$/, ''));
   
-  return { content, filepath, menu, script, style, title, urls, filepath, dirpath, baseUrlPath };
+  // Get versioning information
+  const versionInfo = getVersionInfo(pathname, process.env.WIKIROOT);
+  const versions = buildVersionsData(pathname, versionInfo);
+  
+  return { content, filepath, menu, script, style, title, urls, filepath, dirpath, baseUrlPath, versions };
+}
+
+/**
+ * Build version data for the view
+ */
+function buildVersionsData(pathname, versionInfo) {
+  if (!versionInfo.isVersioned) {
+    return null;
+  }
+  
+  const versions = [];
+  
+  // Add "current" version option
+  versions.push({
+    name: 'current',
+    label: 'Current',
+    url: getVersionUrl(pathname, versionInfo, 'current'),
+    isCurrent: versionInfo.currentVersion === 'current',
+  });
+  
+  // Add all available versions
+  for (const version of versionInfo.availableVersions) {
+    versions.push({
+      name: version,
+      label: version,
+      url: getVersionUrl(pathname, versionInfo, version),
+      isCurrent: versionInfo.currentVersion === version,
+    });
+  }
+  
+  return {
+    current: versionInfo.currentVersion,
+    available: versions,
+  };
 }
 
 function buildModelForUnknownFile(pathname, options) {
