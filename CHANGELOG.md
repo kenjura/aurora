@@ -1,7 +1,73 @@
+# 0.32.0
++ 2025-12-20
++ feature: versioning - added version dropdown in topnav for folders with _versions subfolder
+
+# 0.31.0
++ 2025-11-21
++ toc style fix
+
+# 0.30.0
++ 2025-11-20
++ Merge pull request #20 - removing Facebook nonsense
+
+# 0.29.0
++ 2025-11-20
++ improved toc style
+
+# 0.28.0
++ 2025-11-20
++ feat: Add demote-headings script to adjust heading levels in markdown files
+
+# 0.27.0
++ 2025-11-20
++ bug fix for relative URLs
+
+# 0.26.0
++ 2025-11-06
++ small change to toc generator
+
+# 0.25.0
++ 2024-09-20
++ added new TOC
+
+# 0.24.0
++ 2024-09-06
++ added frontmatter support
+
+# 0.23.0
++ 2023-09-02
++ json files are now served as static files
++ updated .gitignore
+
+# 0.22.0
++ 2023-09-02
++ added nvmrc
+
+# 0.21.0
++ 2023-09-02
++ removed unnecessary debug
+
+# 0.20.0
++ 2023-09-02
++ modified pm2 to not require global installation
+
+# 0.19.0
++ 2023-09-01
++ added example deployment script
+
+# 0.18.0
++ 2022-04-03
++ fixed link active/inactive detection in a world of full-path link URLs
+
+# 0.17.1
++ 2022-04-02
++ changed the way WikiUtil processes links containing slashes
+
 # 0.17.0
 + 2022-03-30
 + rate limiter increased - was way too restrictive for development
 + changed WikiImage render and zoom
++ fixed crappy getDB() logic
 
 # 0.16.0
 + 2022-03-29
