@@ -1,3 +1,7 @@
+# 0.37.0
++ 2025-12-20
++ chore: update .nvmrc to Node 24 LTS
+
 # 0.36.0
 + 2025-12-20
 + refactor: clean up express code - fixed debug import, removed commented code, moved requires to top, replaced console.log with debug, improved formatting
