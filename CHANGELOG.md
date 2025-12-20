@@ -1,3 +1,7 @@
+# 0.34.0
++ 2025-12-20
++ fix: remove all vestiges of Facebook
+
 # 0.33.0
 + 2025-12-20
 + feature: dark mode in default style

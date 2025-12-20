@@ -12,7 +12,6 @@ It's a CMS in development.
 
 ## works
 * Rendering content, menus, and styles
-* Facebook login
 * Top menus
 * Images (more or less)
 * Active/inactive links
@@ -38,7 +37,6 @@ It's a CMS in development.
 * Supports html (WYSIWYG or raw) and wikitext
 * Can customize site style
 * Can create one or more site templates, overriding default layout
-* Uses Passport for auth (at start, only Facebook is supported)
 * Mostly rendered on backend. If complex frontend is needed, will consider React
 
 ## to be determined

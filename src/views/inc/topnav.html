@@ -67,26 +67,6 @@ nav#topnav #topnav-version .version-label {
 	opacity: 0.7;
 	margin-left: 4px;
 }
-/*nav#topnav #topnav-home a,
-nav#topnav #topnav-right a {
-	color: white;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 16px;
-  padding: 16px 16px;
-}*/
-nav#topnav #topnav-right {
-	position: absolute;
-	right: 0px;
-	top: 0px;
-}
-nav#topnav #topnav-right .dropdown-content {
-	left: auto;
-	right: 0;
-}
-nav#topnav #topnav-right .dropdown-content a {
-	color: #444;
-}
 nav#topnav .dropdown-menu > ul > li > a {
 	color: white;
   display: inline-block;
@@ -123,15 +103,6 @@ nav#topnav { z-index: 150; }
 .topnav-item:hover {
 	background: rgba(255,255,255,0.2);
 }
-#user-name {
-}
-#user-dropdown .dropdown-content {
-	top: calc(100% + 14px);
-}
-#user-dropdown .dropdown-content > a:hover {
-	background-color: rgba(0,0,0,0.2);
-	cursor: pointer;
-}
 </style>
 
 <nav id="topnav" class="desktop-only">
@@ -149,16 +120,7 @@ nav#topnav { z-index: 150; }
 		<span class="center-column dropdown-menu">
 			{{scope.menu}}
 		</span>
-		<span id="topnav-right">
-			<span id="user-dropdown" class="dropdown">
-				<a id="user-name" class="topnav-item">{{scope.user.displayName}}</a>
-				<div class="dropdown-content">
-					<a href="/login/facebook">Login</a>
-					<a href="/profile">Profile</a>
-					<a href="/logout">Logout</a>
-				</div>
-			</span>
-		</span>
+
 </nav>
 <nav id="topnav" class="mobile-only">
 	<a id="topnav-home" class="topnav-item" href="/"><i class="fa fa-home"></i></a>
