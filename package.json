@@ -1,6 +1,6 @@
 {
   "name": "aurora",
-  "version": "0.37.0",
+  "version": "0.38.0",
   "description": "wiki software",
   "main": "src/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "debug": "^2.6.8",
-    "ejs": "^2.5.6",
+    "ejs": "^3.1.10",
     "express": "^4.15.3",
     "express-nobots": "^1.0.5",
     "express-rate-limit": "^3.1.1",
@@ -33,23 +33,23 @@
     "isbinaryfile": "^5.0.0",
     "lodash": "^4.17.4",
     "markdown": "^0.5.0",
-    "markdown-it": "^11.0.0",
+    "markdown-it": "^14.1.0",
     "markdown-it-container": "^2.0.0",
     "markdown-it-deflist": "^2.0.3",
     "markdown-it-front-matter": "^0.2.4",
     "markdown-it-sup": "^1.0.0",
     "morgan": "^1.8.2",
     "mysql": "^2.15.0",
-    "pm2": "^5.3.0",
+    "pm2": "^6.0.14",
     "recursive-readdir": "^2.2.2",
     "showdown": "^1.8.7"
   },
   "devDependencies": {
     "chai": "^4.0.2",
     "dotenv": "^4.0.0",
-    "mocha": "^3.4.2",
+    "mocha": "^11.7.5",
     "mock-fs": "^4.4.1",
-    "nodemon": "^1.18.7",
+    "nodemon": "^3.1.11",
     "rewire": "^2.5.2"
   }
 }

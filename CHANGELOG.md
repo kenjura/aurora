@@ -1,3 +1,7 @@
+# 0.38.0
++ 2025-12-20
++ chore: update dependencies to address security vulnerabilities (nodemon, mocha, ejs, markdown-it, pm2 and others)
+
 # 0.37.0
 + 2025-12-20
 + chore: update .nvmrc to Node 24 LTS

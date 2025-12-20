@@ -6,6 +6,6 @@
 - [x] Remove edit mode
 - [x] Clean up sloppy express code
 - [x] Add nvmrc, update to 24 LTS
-- [ ] Check for critical updates to dependencies
+- [x] Check for critical updates to dependencies
 - [ ] Better bot detection
 - [ ] Actual auth?
