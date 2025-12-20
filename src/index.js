@@ -5,14 +5,19 @@ if (!process.env.WIKIROOT) {
   process.exit(1);
 }
 
-const autoIndex     = require('./helpers/autoIndex');
-const express       = require('express');
-const debug         = require('debug','aurora:main');
-const fs            = require('fs');
-const htmlEngine    = require('./helpers/htmlEngine');
-const model         = require('./model/model');
-const noBots        = require('express-nobots');
-const path          = require('path');
+const autoIndex = require('./helpers/autoIndex');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const debug = require('debug')('aurora:main');
+const fs = require('fs');
+const htmlEngine = require('./helpers/htmlEngine');
+const model = require('./model/model');
+const morgan = require('morgan');
+const noBots = require('express-nobots');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
+const session = require('express-session');
 
 const { getArticleList } = require('./helpers/getFilesRecursively');
 
@@ -20,217 +25,188 @@ debug('aurora is starting...');
 
 const port = process.env.PORT || 3004;
 
-// Create a new Express application.
-var app = express();
+const app = express();
 
-// Configure view engine to render EJS templates.
-app.set('views', __dirname + '/views');
-// app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 htmlEngine(app);
 
-app.use(require('morgan')('combined'));
-app.use(noBots({ block:false }));
+// Middleware
+app.use(morgan('combined'));
+app.use(noBots({ block: false }));
 app.all('*', (req, res, next) => {
-	if (req.isBot) {
-		console.log('bot!');
-		return res.status(200).send('...');
-	} else next();
+  if (req.isBot) {
+    debug('bot detected');
+    return res.status(200).send('...');
+  }
+  next();
 });
-// Use application-level middleware for common functionality, including
-// logging, parsing, and session handling.
-// app.use(require('morgan')('combined'));
-app.use(require('cookie-parser')());
-app.use(require('body-parser').text());
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(cookieParser());
+app.use(bodyParser.text());
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
-// Define routes.
+// Routes
 
-app.get('/favicon.*',(req,res) => res.send(null));
+app.get('/favicon.*', (req, res) => res.send(null));
 
-// static files
-app.use('/static', express.static(path.join(__dirname, 'static'))) // serve static files backed into aurora
+app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// special endpoints
-app.get('/:db/search/:query', async (req, res, next) => {
-  console.warn('index > get /:db/search/:query > old search endpoint being used! this endpoint is deprecated in favor of /search/:query');
+// Search endpoints
+app.get('/:db/search/:query', async (req, res) => {
+  debug('deprecated search endpoint /:db/search/:query used');
   const basepath = path.join(process.env.WIKIROOT, `/${req.params.db}`);
   const allFiles = await getArticleList(basepath);
-  const matches = allFiles.filter( file => file.match(req.params.query) );
+  const matches = allFiles.filter(file => file.match(req.params.query));
   res.status(200).send(matches);
 });
-app.get(/\/search\/(.*)/, async (req, res, next) => {
+
+app.get(/\/search\/(.*)/, async (req, res) => {
   const fullQuery = req.params[0];
-  const articleName = fullQuery.substr(fullQuery.lastIndexOf('/')+1);
+  const articleName = fullQuery.substr(fullQuery.lastIndexOf('/') + 1);
   const basepath = path.join(process.env.WIKIROOT);
   const allFiles = await getArticleList(basepath);
-  const goodMatches = allFiles.filter( file => file.match(fullQuery) );
-  const okMatches = allFiles.filter( file => file.match(articleName) );
+  const goodMatches = allFiles.filter(file => file.match(fullQuery));
+  const okMatches = allFiles.filter(file => file.match(articleName));
   res.status(200).send({ basepath, goodMatches, okMatches, fullQuery, articleName });
-  // res.status(200).send(matches);
 });
-app.get('/', (req, res, next) => {
+
+// Home route
+app.get('/', (req, res) => {
   const basepath = process.env.WIKIROOT;
   const allFiles = autoIndex.get(basepath);
   const scope = {
     content: { final: allFiles.map(file => `<li><a href="${file.link}">${file.name}</a></li>`).join('') },
-  }
-  res.render('view', scope)
+  };
+  res.render('view', scope);
 });
 
-const rateLimit = require("express-rate-limit");
- 
-app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
- 
+// Rate limiting
+app.enable('trust proxy');
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 1000
 });
- 
-// only apply to requests that begin with /api/
-app.use("/:db/:article", apiLimiter);
+app.use('/:db/:article', apiLimiter);
 
-// serve images and webfonts from wikiroot as static files (but not text files!)
-const WIKIROOT_STATIC_FILE_EXTENSIONS = [ 'woff', 'woff2', 'png', 'jpg', 'json' ];
-/**
- * Import 'file-type' ES-Module in CommonJS Node.js module
- */
+// Serve binary files from WIKIROOT
+const WIKIROOT_STATIC_EXTENSIONS = ['woff', 'woff2', 'png', 'jpg', 'json'];
+
 let fileTypeFromFile;
 (async () => {
-  const foo = await import('file-type');
-  fileTypeFromFile = foo.fileTypeFromFile;
-
-  // const type = await fileTypeFromFile('fixture/fixture.gif');
-  // console.log(type);
+  const fileType = await import('file-type');
+  fileTypeFromFile = fileType.fileTypeFromFile;
 })();
-const isBinaryFile = require("isbinaryfile").isBinaryFile;
+
+const { isBinaryFile } = require('isbinaryfile');
 const { readFile, lstat } = require('fs').promises;
 
-app.get('*', async function (req, res, next) {
+app.get('*', async (req, res, next) => {
   if (req.isBot) {
-  	console.log('should not see this. bot accessing normal content! wtf');
-  	return res.status(200).send('nope');
+    debug('bot attempting to access content');
+    return res.status(200).send('nope');
   }
+
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
-  const extension = fullpath.substr( fullpath.lastIndexOf('.')+1 );
+  const extension = fullpath.substr(fullpath.lastIndexOf('.') + 1);
   const isTextButServeAsStatic = ['json'].includes(extension);
 
-  // does the file exist? if not, it sure ain't an image
-  if (!fs.existsSync(fullpath)) return next(); 
+  if (!fs.existsSync(fullpath)) return next();
 
-
-  // is it text? ignore
   try {
     const data = await readFile(fullpath);
     const stat = await lstat(fullpath);
     const isBinary = await isBinaryFile(data, stat.size);
+    
     if (!isBinary) {
       if (isTextButServeAsStatic) {
-        const ext = path.extname(fullpath);
-        switch (ext) {
-          case '.json':
-            res.header( "Content-Type", "application/json" );
-            break;
+        if (path.extname(fullpath) === '.json') {
+          res.header('Content-Type', 'application/json');
         }
         return res.status(200).send(data);
-      } else {
-        return next();
       }
+      return next();
     }
-  } catch(err) {
-    console.error('index > wikiroot static image processor > something has gone wrong. skipping current file. this may be in error.');
-    console.error(err);
+  } catch (err) {
+    debug('error processing file, skipping: %s', err.message);
     return next();
   }
 
-  // is it an image? don't trust path, analyze the file
-  console.log({fullpath});
-  const { ext, mime } = await fileTypeFromFile(fullpath);
-  const isValidImage = WIKIROOT_STATIC_FILE_EXTENSIONS.includes(ext);
-  console.log({ ext, mime });
-
-  if (!isValidImage) {
-    console.log('this is not an image. bypassing image processing.');
+  debug('serving static file from WIKIROOT: %s', fullpath);
+  const { ext } = await fileTypeFromFile(fullpath);
+  
+  if (!WIKIROOT_STATIC_EXTENSIONS.includes(ext)) {
+    debug('file type %s not in allowed list, skipping', ext);
     return next();
-  } else {
-    console.log('this is an image. processing image.');
   }
-
-  console.debug('getting static file from WIKIROOT.', { fullpath, extension });
 
   const filecontents = fs.readFileSync(fullpath);
-  switch (extension) {
-    case 'woff':
-      res.header('Content-Type', 'application/font-woff');
-      break;
-    case 'woff2':
-      res.header('Content-Type', 'font/woff2');
-      break;
-    case 'png':
-      res.header("Content-Type", "image/png");
-      break;
-    case 'jpg':
-      res.header("Content-Type", "image/jpeg");
-      break;
-      case 'json':
-        res.header("Content-Type", "application/json");
-        break;
-    default:
+  const contentTypes = {
+    woff: 'application/font-woff',
+    woff2: 'font/woff2',
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    json: 'application/json'
+  };
+  
+  if (contentTypes[extension]) {
+    res.header('Content-Type', contentTypes[extension]);
   }
   res.status(200).send(filecontents);
 });
 
 
-// catch-all for frontend routes
-app.get('*', function(req, res, next) {
+// Article routes
+app.get('*', (req, res) => {
   let pathname = req.path;
 
-  // special pages
   const options = {};
-  if (pathname.match(/\/all$/)) { options.index = true; pathname = pathname.replace(/\/all$/,''); }
+  if (pathname.match(/\/all$/)) {
+    options.index = true;
+    pathname = pathname.replace(/\/all$/, '');
+  }
 
-  // image
-  if (pathname.match(/(\.jpg|\.png)/)) return express.static(path.join(process.env.WIKIROOT))(req, res, next);
+  if (pathname.match(/(\.jpg|\.png)/)) {
+    return express.static(path.join(process.env.WIKIROOT))(req, res, () => {});
+  }
 
-  // prepare autoIndex
   const fullpath = path.join(process.env.WIKIROOT, unescape(req.path));
-  let stats, exists, isDir; // sigh
+  let exists = false;
+  let isDir = false;
+  
   try {
-    stats = fs.lstatSync(fullpath);
+    const stats = fs.lstatSync(fullpath);
     exists = true;
     isDir = stats.isDirectory();
-  } catch(e) {
+  } catch (e) {
     exists = false;
   }
 
-  // const dirname = isDir ? fullpath : path.dirname(fullpath);
   const dirname = path.dirname(fullpath);
   const allFiles = autoIndex.get(dirname);
-  // const allFiles = fs.lstatSync(fullpath).isDirectory() ? autoIndex.get(fullpath) : [];
   const index = allFiles
     .map(file => `<li><a href="${file.link}">${file.name}</a></li>`)
     .join('');
-  console.log({ fullpath, exists, isDir, dirname });
+  
+  debug('rendering article: %s (exists: %s, isDir: %s)', fullpath, exists, isDir);
 
-  // render article
   const data = model.build(pathname, options);
   if (!data) return res.render('no_article');
   if (data === 404) return res.render('404');
+  
   const obj = Object.assign({ index, isDir }, data);
-  if (typeof(req.query.raw) !== 'undefined') return res.send(obj.content.raw);
+  if (typeof req.query.raw !== 'undefined') return res.send(obj.content.raw);
   res.render('view', obj);
 });
 
-model.getAllFilesInWikiroot(); // by the time the first request comes in, this will be done. probably. I dunno. Fuck it.
+// Preload article list
+model.getAllFilesInWikiroot();
 
-
-// general error handler
-app.use((err, req, res, next) => {
-  console.error('GENERAL ERROR',err);
+// Error handler
+app.use((err, req, res, _next) => {
+  console.error('Error:', err);
   res.status(500).send('It is pitch black. You are likely to be eaten by a grue.');
-})
-
-app.listen(port, err => {
-  debug('aurora is online');
-  console.log(`app is running on port ${port}`);
 });
 
+app.listen(port, () => {
+  debug('aurora is online');
+  console.log(`Aurora is running on port ${port}`);
+});
